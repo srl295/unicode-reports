@@ -1,0 +1,112 @@
+<!doctype HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"><html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-us">
+<meta name="VI60_defaultClientScript" content="JavaScript">
+<meta name="GENERATOR" content="Microsoft FrontPage 12.0">
+<meta name="keywords" content="Compression">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>UTS #39 Suggestion Form: Confusables</title>
+<link rel="stylesheet" type="text/css" href="http://www.unicode.org/webscripts/standard_styles.css">
+</head>
+
+<body>
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr>
+    <td colspan="2">
+      <table width="100%" border="0" cellpadding="0" cellspacing="0">
+        <tr>
+          <td class="icon"><a href="http://www.unicode.org/"><img border="0" src="http://www.unicode.org/webscripts/logo60s2.gif" 
+          align="middle" alt="[Unicode]" width="34" height="33"></a>&nbsp;&nbsp;<a 
+          href="http://www.unicode.org/reports/tr39/"><font size="3" 
+          color="#FFFFFF">UTS #39, Unicode Security Mechanisms</font></a></td>        
+          <td class="bar"><a href="http://www.unicode.org" class="bar">Home</a> 
+            | <a href="http://www.unicode.org/sitemap/" class="bar">Site Map</a> 
+            | <a href="http://www.unicode.org/search" class="bar">Search</a></td>
+        </tr>
+    <tr>
+      <td colspan="2" class="gray">&nbsp;</td>
+    </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+  <!-- BEGIN CONTENTS -->
+<div class="body">
+<h1 >Feedback on Confusables or Identifier Restriction Data</h1>
+<p align="center" >
+<a href="http://www.unicode.org/reports/tr39/" target="_blank"><font size="3">UTS #39, Unicode Security Mechanisms</font></a></p>
+<p>You can use one of the following two forms to suggest  data additions or modifications for identifier characters in the next version of <em>UTS #39, 
+<a href="http://www.unicode.org/reports/tr39/">Unicode Security Mechanisms</a></em>. For the latest version, see <em>UTS #39, 
+<a href="http://www.unicode.org/reports/tr39/">Unicode Security Mechanisms</a></em>. A 
+<a href="http://www.unicode.org/reports/tr39/proposed.html">proposed update</a> may be available for review.</p>
+<ul>
+  <li><a href="restrictions.html">Identifier Restrictions</a>
+    <ul>
+      <li>The identifier restrictions provide information about which characters should 
+	  be restricted in general-purpose identifiers, for security purposes. For example, <em>historic</em> scripts are a candidate for such exclusion. Removing these characters causes less confusion, and avoids the need to consider all of the possible confusable characters.</li>
+    </ul>
+  </li>
+  <li><a href="confusables.html">Confusables</a>
+    <ul>
+      <li>Characters are confusable when they can be confused at normal font sizes in common UI fonts. While the <a href="http://unicode.org/charts/">Unicode code charts</a> can be consulted for a representative glyph, what is  more important are the glyphs that are in common UI fonts. Some of this data can be gathered mechanically, but there are many cases where human judgment is needed. On the Mac, the Character Viewer can be used to see glyphs in different fonts for a given character; for Windows and Linux, see <em><a href="http://en.wikipedia.org/wiki/Unicode_input#Selection_from_a_screen">Selection from a Screen</a></em>.</li>
+      <li>The focus of the current data for 
+	  <a href="http://www.unicode.org/reports/tr39/"><em>UTS #39, Unicode Security Mechanisms</em></a> is for “allowed” characters (in <a href="restrictions.html">Restrictions</a>). There is little data for other scripts, and the data is sparse for the <a href="http://unicode.org/cldr/utility/identifier.jsp?a=han">Han script</a> and scripts of South and Southest Asia, such as <a href="http://unicode.org/cldr/utility/identifier.jsp?a=Devanagari">Devanagari</a>. Suggestions for improvements for these and other scripts are welcome.  </li>
+    </ul>
+  </li>
+</ul>
+<h2>Data Formats</h2>
+<p>On the reporting forms <a href="restrictions.html">Restrictions</a> and <a href="confusables.html">Confusables</a>, you can specify  characters either with hex codes or  literal characters. Where you specify a string of multiple characters, please separate them by spaces. For example:</p>
+<table border="0">
+  <tr>
+    <th>Example</th>
+    <th>Comment</th>
+  </tr>
+  <tr>
+    <td>〃</td>
+    <td> U+3003 DITTO MARK</td>
+  </tr>
+  <tr>
+    <td>3003</td>
+    <td> U+3003 DITTO MARK</td>
+  </tr>
+  <tr>
+    <td>a c</td>
+    <td>The string &quot;ac&quot;</td>
+  </tr>
+  <tr>
+    <td>0061 0063</td>
+    <td>The same string, with hex codes.</td>
+  </tr>
+</table>
+<p>For <a href="restrictions.html">Restrictions</a>, you can also specify a set of characters. That should use one of the following formats:</p>
+<table border="0">
+  <tr>
+    <th>Example</th>
+    <th>Comment</th>
+  </tr>
+  <tr>
+    <td>a..c</td>
+    <td>All of the characters between a and c, in Unicode order.</td>
+  </tr>
+  <tr>
+    <td>0061..0063</td>
+    <td>The same range, using with hex codes.</td>
+  </tr>
+  <tr>
+    <td> 
+	<a href="http://unicode.org/cldr/utility/list-unicodeset.jsp?a=[:blk=Greek:]">[:blk=Greek:] 
+	</a> </td>
+    <td>An entire <a target="_blank" href="http://unicode.org/cldr/utility/properties.jsp?a=Block#Block">block</a>, or other UnicodeSet.</td>
+  </tr>
+</table><div>
+</div>
+<h2>Bulk Data</h2>
+<p>If you have a large amount of data that you would like to submit, please request instructions using the <a href="http://unicode.org/reporting.html">Unicode Contact Form</a>.</p>
+<p>&nbsp;</p>
+</div>
+</body>
+
+</html>
