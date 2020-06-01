@@ -1,0 +1,1153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Language" content="en-us">
+<title>UTS #52: Unicode Emoji Mechanisms</title>
+<link rel="stylesheet" type="text/css" href="http://www.unicode.org/reports/reports-v2.css">
+<style type="text/css">
+
+<!--
+
+a:visited.plain, a:link.plain {
+
+	color: black;
+
+	text-decoration: none
+
+}
+
+
+
+a:hover.plain {
+
+	color: red;
+
+	text-decoration: underline;
+
+}
+
+
+
+.fake_color {
+
+	color: #E56756;
+
+}
+
+
+
+.alink {
+
+	text-decoration: underline;
+
+}
+
+
+
+.linkstyle {
+
+	font-weight: bold;
+
+	text-decoration: underline;
+
+	font-size: 90%;
+
+}
+
+
+
+.works {
+
+	background-color: #ccFFcc;
+
+}
+
+
+
+.fails {
+
+	background-color: #FFcccc;
+
+}
+
+
+
+.modcharbg {
+
+	background-color: #E0E0FF;
+
+}
+
+
+
+.nolink:link, .nolink:visited {
+
+	color: black;
+
+	text-decoration: none;
+
+}
+
+
+
+.nolink:hover {
+
+	color: red;
+
+	text-decoration: underline;
+
+}
+
+
+
+.body ol li em {
+
+	font-family: Georgia, Times New Roman, Times, serif;
+
+}
+
+
+
+.green {
+
+	color: #00B800;
+
+}
+
+
+
+th {
+
+	background-color: #EEE;
+
+}
+
+
+
+.nowrap {
+
+	white-space: nowrap;
+
+}
+
+
+
+.serif {
+
+	font-family: serif;
+
+}
+
+
+
+.imgb {
+
+	width: 24px;
+
+	height: 24px;
+
+	margin-top: 1px;
+
+	margin-bottom: 1px;
+
+	vertical-align: text-bottom;
+
+}
+
+-->
+
+</style>
+</head>
+<body bgcolor="#ffffff">
+	<table class="header">
+		<tr>
+			<td class="icon"><a href="http://www.unicode.org"> <img
+					align="middle" alt="[Unicode]" border="0"
+					src="http://www.unicode.org/webscripts/logo60s2.gif" width="34"
+					height="33"></a>&nbsp; <a class="bar"
+				href="http://www.unicode.org/reports/">Technical Reports</a></td>
+		</tr>
+		<tr>
+			<td class="gray">&nbsp;</td>
+		</tr>
+	</table>
+	<div class="body">
+		<h2 align="center">
+			<span class="changed">Proposed Draft </span>Unicode® Technical
+			Standard
+			#52
+		</h2>
+		<h1>Unicode Emoji Mechanisms</h1>
+		<table class="simple" width="90%">
+			<tr>
+				<td width="20%">Version</td>
+				<td class="changed">1.0 (draft 3)</td>
+			</tr>
+			<tr>
+				<td>Editors</td>
+				<td><a
+					href="https://plus.google.com/114199149796022210033?rel=author">Mark
+						Davis</a> (Google Inc.), Peter Edberg (Apple Inc.)</td>
+			</tr>
+			<tr>
+				<td>Date</td>
+				<td class="changed">2016-05-25</td>
+			</tr>
+			<tr>
+				<td>This Version</td>
+				<td class="changed">
+				<a href="http://www.unicode.org/reports/tr52/tr52-3.html">
+				http://www.unicode.org/reports/tr52/tr52-3.html</a></td>
+			</tr>
+			<tr>
+				<td>Previous Version</td>
+				<td class="changed">
+				<a href="http://www.unicode.org/reports/tr52/tr52-1.html">http://www.unicode.org/reports/tr52/tr52-1.html</a></td>
+			</tr>
+			<tr>
+				<td>Latest Version</td>
+				<td><a href="http://www.unicode.org/reports/tr52/">http://www.unicode.org/reports/tr52/</a></td>
+			</tr>
+			<tr>
+				<td valign="top">Latest Proposed Update</td>
+				<td valign="top"><a
+					href="http://www.unicode.org/reports/tr52/proposed.html">http://www.unicode.org/reports/tr52/proposed.html</a></td>
+			</tr>
+			<tr>
+				<td>Revision</td>
+				<td class="changed"><a href="#Modifications">3</a></td>
+			</tr>
+		</table>
+
+		<p>&nbsp;</p>
+
+		<h3>
+			<i>Summary</i>
+		</h3>
+		<p>
+			<i>This document provides provides a new way of representing
+				customizations of Unicode emoji characters. The first specified
+				customizations provide for flags for subdivisions of countries (such
+				as Scotland or California), gender variants (such as female runners
+				or males raising a hand), hair color variants (a red-haired dancer),
+				and directional variants (pointing a hand or bicyclist to the
+				right).</i>
+		</p>
+		<h3>
+			<i>Status</i>
+		</h3>
+		<!-- NOT YET APPROVED -->
+		<p class="changed">
+			<em> Work on this document has been suspended, pending investigation into whether ZWJ sequences would provide a better solution in the near term, at least for the highest priority feature: gender.</em></p>
+		<p class="changed"><i>This document is a <b><font color="#ff3333">
+		  proposed draft Unicode Technical Standard</font></b>. This document may be
+		  updated, replaced, or superseded by other documents at any time.
+		  Publication does not imply endorsement by the Unicode Consortium.
+		  This is not a stable document; it is inappropriate to cite this
+		  document as other than a work in progress.
+		  </i>
+	  </p>
+		<!-- END NOT YET APPROVED -->
+		<!-- APPROVED
+		<p>
+			<i>This document has been reviewed by Unicode members and other
+				interested parties, and has been approved for publication by the
+				Unicode Consortium. This is a stable document and may be used as
+				reference material or cited as a normative reference by other
+				specifications.</i>
+		</p>
+		END APPROVED -->
+
+		<blockquote>
+			<p>
+				<i><b>A Unicode Technical Standard (UTS)</b> is an independent
+					specification. Conformance to the Unicode Standard does not imply
+					conformance to any UTS.</i>
+			</p>
+		</blockquote>
+		<p>
+			<i>Please submit corrigenda and other comments with the online
+				reporting form [<a href="http://www.unicode.org/reporting.html">Feedback</a>].
+				Related information that is useful in understanding this document is
+				found in the <a href="#References">References</a>. For the latest
+				version of the Unicode Standard, see [<a
+				href="http://www.unicode.org/versions/latest/">Unicode</a>]. For a
+				list of current Unicode Technical Reports, see [<a
+				href="http://www.unicode.org/reports/">Reports</a>]. For more
+				information about versions of the Unicode Standard, see [<a
+				href="http://www.unicode.org/versions/">Versions</a>].
+			</i>
+		</p>
+		<h3>
+			<i><a name="Contents" href="#Contents">Contents</a></i>
+		</h3>
+		<ul class="toc">
+			<li>1 <a href="#Introduction">Introduction</a></li>
+
+			<li>2 <a href="#Conformance">Conformance</a></li>
+			<li>3 <a href="#Technical_Specification">Technical Specification</a>
+				<ul class="toc">
+					<li>3.1 <a href="#Overall_Syntax">Overall Syntax</a></li>
+					<li>3.2 <a href="#Flags">Flags</a></li>
+					<li>3.3 <a href="#Attributes_General">Attributes General Info</a></li>
+					<li>3.4 <a href="#Gender_Attribute">Gender Attribute</a></li>
+					<li>3.5 <a href="#Hair_Attribute">Hair Attribute</a></li>
+					<li>3.6 <a href="#Direction_Attribute">Direction Attribute</a></li>
+					<li>3.7 <a href="#Private_Use">Private Use</a></li>
+				</ul></li>
+			<li>4 <a href="#Implementation_Notes">Implementation Notes</a></li>
+			<li><a href="#Acknowledgements">Acknowledgments</a></li>
+			<li><a href="#References">References</a></li>
+			<li><a href="#Modifications">Modifications</a></li>
+		</ul>
+		<br>
+		<hr>
+		<br>
+		<h2>
+			1 <a name="Introduction" href="#Introduction">Introduction</a><a
+				name="Background"> </a>
+		</h2>
+		<p>There are many requests for variants of Unicode emoji. This
+			document provides a concrete proposal for a mechanism that could be
+			used for such customization, using the Unicode TAG characters. This
+			approach allows the creation of variant emoji images without waiting
+			for them to be encoded, and has been designed to be extensible.</p>
+		<p>The basic idea is like that of skin tone modifiers, used when a
+			user selects an olive-skinned emoji on the keyboard. Internally that
+			emoji consists of a base emoji followed by a skin-tone modifier that
+			indicates that the base emoji should be olive-skinned. The
+			olive-skinned emoji looks like a single character to the user, and
+			behaves as a single emoji character in display, line break, and other
+			processing.</p>
+		<p>With this TAG mechanism, a given emoji can have a specified
+			list of special “TAG” characters after it that indicate a particular
+			customization: the whole sequence is called an “emoji tag sequence”.
+			The emoji tag sequence looks like a single character to the user, and
+			behaves as a single emoji character in display, line break, and other
+			processing. The TAG mechanism differs from the skin-tone modifiers in
+			being much extensible.</p>
+		<p>
+			The gray image in the illustrations below represent a sequence of TAG
+			characters; the exact sequence that would be used in each case is
+			described in the <a href='#Technical_Specification'>Technical Specification</a>. For
+			example, the image on the left below would be what the user sees; the
+			sequence on the right would be the internal representation. The TAG
+			characters indicated by the gray “…&#10022;” below would never be
+			visible.
+		</p>
+		<p align="center">
+			<img alt="" src="images/scottish-flag.png" title="tag sequence"
+				height='36px' width='auto'><span style='font-size: 36px'>
+				= </span><img alt="" src="images/white-flag.png" title="tag sequence"
+				height='36px' width='auto'><img alt=""
+				src="images/tag-coda.png" title="tag sequence" height='36px'
+				width='auto'>
+		</p>
+		<p>If the TAG sequence is invalid, or if the system doesn't
+			support that tag sequence, the user would see an indication of that,
+			such as:</p>
+		<p align="center">
+			<img alt="" src="images/image07.png" title="tag sequence"
+				height='36px' width='auto'><span style='font-size: 36px'>
+				= </span><img alt="" src="images/white-flag.png" title="tag sequence"
+				height='36px' width='auto'><img alt=""
+				src="images/tag-coda.png" title="tag sequence" height='36px'
+				width='auto'>
+		</p>
+		<p>
+			The Unicode emoji customization mechanism is used to request an
+			alternate rendering of a particular emoji character. It is only used
+			where the base emoji character is in some way generic, and the
+			customization would be considered a variant of that base character.
+			For example, it could be used to indicate that the MAN emoji should
+			be shown with red hair, but <em>not</em> that the MAN emoji be shown
+			as a cup of tea.
+		</p>
+		<p>
+			Only those emoji tag sequences that follow the specifications in this
+			document are valid. Like the emoji sequences for different family
+			groups (aka <em>emoji zwj sequences</em>), Unicode would catalog
+			those sequences that are supported by major vendors, but would not
+			recommend particular combinations.
+		</p>
+		<p>The first specified customizations include flags, gender, hair
+			color, and direction. The hair color, gender, direction, and
+			emoji-modifiers could be applied to the same emoji, resulting in a
+			combinatorial explosion of possible glyphs in fonts. The flag
+			customizations also allow for a very large number of possible glyphs.
+			Due to memory constraints, it is thus anticipated that only certain
+			combinations would be supported by major vendors. There is no
+			requirement or expectation that all of the possible combinations — or
+			even any large subset of them — be supported by vendors, until there
+			is technology in the fonts to deal with the combinatorics.</p>
+		<p>
+			<strong>Flags. </strong>These customizations allow for additional
+			emoji for images of a flag associated with particular regions, such
+			as emoji depictions of the flag of Scotland or California.
+		</p>
+		<p align="center">
+			<img alt="" src="images/scottish-flag.png" title="tag sequence"
+				height='36px' width='auto'><span style='font-size: 36px'>
+				= </span><img alt="" src="images/white-flag.png" title="tag sequence"
+				height='36px' width='auto'><img alt=""
+				src="images/tag-coda.png" title="tag sequence" height='36px'
+				width='auto'>
+		</p>
+		<p>They are limited to Unicode subdivisions (which generally
+			correspond to ISO 3166-2 subdivisions), and valid 3-digit UN codes.
+			Like the Regional_Indicator characters, they do not represent a
+			specific image. One way to think of them is that they represent “a
+			flag” for a region, not “the flag” for a region. This mechanism
+			cannot be used for arbitrary flags. It cannot, for example, be used
+			for a rainbow flag, the flag of a particular football club, or a
+			pirate flag.</p>
+
+		<p>
+			<strong>Gender. </strong>These customizations allow for emoji images
+			with different genders.
+		</p>
+		<p align="center">
+			<img alt="" src="images/woman-runner.png" title="tag sequence"
+				height='36px' width='auto'><span style='font-size: 36px'>
+				= </span><img alt="" src="images/runner.png" title="tag sequence"
+				height='36px' width='auto'><img alt=""
+				src="images/tag-coda.png" title="tag sequence" height='36px'
+				width='auto'>
+		</p>
+		<p>Unicode itself does not normally specify the gender for emoji
+			characters: the emoji character is RUNNER, not MAN RUNNING; POLICE
+			OFFICER not POLICEMAN. For a greater sense of realism, however,
+			vendors typically have picked a particular gender to display, even
+			for the neutral characters.</p>
+		<p>The Gender customization allow vendors to display male, female,
+			and neutral versions. Neutral doesn’t mean the default (untagged)
+			presentation, which could be any of these three; it means a
+			specifically a gender-neutral presentation. These customizations are
+			to mark appearance, and not gender identification.</p>
+		<p>The following is a draft list of emoji characters that would
+			allow customizations of gender. The comment (after #) includes the
+			version of Unicode where the character was encoded, an image, and the
+			character name.</p>
+		<p class='reviewnote'>Review Note: the images are currently
+			characters, so the appearance will depend on the platform people view
+			them on. They will be supplemented by an image so that people can
+			read this document without having emoji support.</p>
+		<table class='simple'>
+			<tr>
+				<td><pre>26F9  # 5.2 (⛹) PERSON WITH BALL<br>1F3C3 # 6.0 (🏃) RUNNER<br>1F3C4 # 6.0 (🏄) SURFER<br>1F3CA # 6.0 (🏊) SWIMMER<br>1F3CB # 7.0 (🏋) WEIGHT LIFTER<br>1F464 # 6.0 (👤) BUST IN SILHOUETTE<br>1F465 # 6.0 (👥) BUSTS IN SILHOUETTE<br>1F46E # 6.0 (👮) POLICE OFFICER<br>1F46F # 6.0 (👯) WOMAN WITH BUNNY EARS<br>1F470 # 6.0 (👰) BRIDE WITH VEIL<br>1F471 # 6.0 (👱) PERSON WITH BLOND HAIR<br>1F472 # 6.0 (👲) MAN WITH GUA PI MAO<br>1F473 # 6.0 (👳) MAN WITH TURBAN<br>1F481 # 6.0 (💁) INFORMATION DESK PERSON<br>1F482 # 6.0 (💂) GUARDSMAN<br>1F486 # 6.0 (💆) FACE MASSAGE<br>1F487 # 6.0 (💇) HAIRCUT<br>1F574 # 7.0 (🕴) MAN IN BUSINESS SUIT LEVITATING<br>1F575 # 7.0 (🕵) SLEUTH OR SPY</pre></td>
+				<td><pre>1F5E3 # 7.0 (🗣) SPEAKING HEAD IN SILHOUETTE<br>1F645 # 6.0 (🙅) FACE WITH NO GOOD GESTURE<br>1F646 # 6.0 (🙆) FACE WITH OK GESTURE<br>1F647 # 6.0 (🙇) PERSON BOWING DEEPLY<br>1F64B # 6.0 (🙋) HAPPY PERSON RAISING ONE HAND<br>1F64D # 6.0 (🙍) PERSON FROWNING<br>1F64E # 6.0 (🙎) PERSON WITH POUTING FACE<br>1F6A3 # 6.0 (🚣) ROWBOAT<br>1F6B4 # 6.0 (🚴) BICYCLIST<br>1F6B5 # 6.0 (🚵) MOUNTAIN BICYCLIST<br>1F6B6 # 6.0 (🚶) PEDESTRIAN<br>1F6C0 # 6.0 (🛀) BATH<br>1F926 # 9.0 (🤦) FACE PALM<br>1F935 # 9.0 (🤵) MAN IN TUXEDO<br>1F937 # 9.0 (🤷) SHRUG<br>1F938 # 9.0 (🤸) PERSON DOING CARTWHEEL<br>1F93B # 9.0 (🤻) MODERN PENTATHLON<br>1F93C # 9.0 (🤼) WRESTLERS<br>1F93D # 9.0 (🤽) WATER POLO<br>1F93E # 9.0 (🤾) HANDBALL</pre></td>
+			</tr>
+		</table>
+		<p>This includes characters that have explicit gender in their
+			names, where there is not a corresponding character of the other
+			gender (MAN vs WOMAN).</p>
+		<p class="reviewnote">Review Note: Some characters encoded to form
+			gender pairs might not have been encoded had this mechanism been
+			available and widely implemented earlier. However, it is too late to
+			remove these characters.</p>
+		<p class="reviewnote">Review Note: Possible removals from the base
+			character list above: For the 9.0 sports figures, we could drop those
+			for which we have consensus to only show neutral images. We need to
+			look at whether JUGGLING might be a person or should not be. Finally,
+			we are considering removal of the three “IN SILHOUETTE” characters
+			(two BUSTS, one SPEAKING HEAD).</p>
+
+		<p>
+			<strong>Hair Color. </strong>These customizations allow for emoji
+			images with different hair colors.
+		</p>
+		<p align="center">
+			<img alt="" src="images/ginger-man.png" title="tag sequence"
+				height='36px' width='auto'><span style='font-size: 36px'>
+				= </span><img alt="" src="images/man.png" title="tag sequence"
+				height='36px' width='auto'><img alt=""
+				src="images/tag-coda.png" title="tag sequence" height='36px'
+				width='auto'>
+		</p>
+		<p>There are hundreds of possible distinctions among hair color,
+			but because emoji are presented with a “cartoon” style it suffices to
+			have just a few broad choices; that is also important to avoid
+			font-size problems. The supported list is BLACK, BLONDE, BROWN, RED,
+			GRAY, with the addition of Bald (no hair). This list is based on the
+			distinctions made in the US Online Passport form, the UN Grounds Pass
+			application, and other forms such as driver’s licences.</p>
+		<p>The following is a draft list of emoji characters that would
+			allow customizations of hair color:</p>
+		<table class='simple'>
+			<tr>
+				<td><pre>26F9  # 5.2 (⛹) PERSON WITH BALL<br>1F3C3 # 6.0 (🏃) RUNNER<br>1F3C4 # 6.0 (🏄) SURFER<br>1F3CA # 6.0 (🏊) SWIMMER<br>1F3CB # 7.0 (🏋) WEIGHT LIFTER<br>1F466 # 6.0 (👦) BOY<br>1F467 # 6.0 (👧) GIRL<br>1F469 # 6.0 (👩) WOMAN<br>1F46E # 6.0 (👮) POLICE OFFICER<br>1F470 # 6.0 (👰) BRIDE WITH VEIL<br>1F472 # 6.0 (👲) MAN WITH GUA PI MAO<br>1F473 # 6.0 (👳) MAN WITH TURBAN<br>1F474 # 6.0 (👴) OLDER MAN<br>1F475 # 6.0 (👵) OLDER WOMAN<br>1F476 # 6.0 (👶) BABY<br>1F478 # 6.0 (👸) PRINCESS<br>1F47C # 6.0 (👼) BABY ANGEL<br>1F481 # 6.0 (💁) INFORMATION DESK PERSON<br>1F483 # 6.0 (💃) DANCER<br>1F486 # 6.0 (💆) FACE MASSAGE<br>
+					</pre></td>
+				<td><pre>1F487 # 6.0 (💇) HAIRCUT<br>1F575 # 7.0 (🕵) SLEUTH OR SPY<br>1F57A # 9.0 (🕺) MAN DANCING<br>1F645 # 6.0 (🙅) FACE WITH NO GOOD GESTURE<br>1F646 # 6.0 (🙆) FACE WITH OK GESTURE<br>1F647 # 6.0 (🙇) PERSON BOWING DEEPLY<br>1F64B # 6.0 (🙋) HAPPY PERSON RAISING ONE HAND<br>1F64D # 6.0 (🙍) PERSON FROWNING<br>1F64E # 6.0 (🙎) PERSON WITH POUTING FACE<br>1F6A3 # 6.0 (🚣) ROWBOAT<br>1F6B6 # 6.0 (🚶) PEDESTRIAN<br>1F926 # 9.0 (🤦) FACE PALM<br>1F930 # 9.0 (🤰) PREGNANT WOMAN<br>1F934 # 9.0 (🤴) PRINCE<br>1F935 # 9.0 (🤵) MAN IN TUXEDO<br>1F936 # 9.0 (🤶) MOTHER CHRISTMAS<br>1F937 # 9.0 (🤷) SHRUG<br>1F938 # 9.0 (🤸) PERSON DOING CARTWHEEL<br>1F93B # 9.0 (🤻) MODERN PENTATHLON<br>1F93C # 9.0 (🤼) WRESTLERS<br>1F93D # 9.0 (🤽) WATER POLO<br>1F93E # 9.0 (🤾) HANDBALL</pre></td>
+			</tr>
+		</table>
+		<p>
+			<strong>Direction.</strong> These customizations allow for emoji
+			images to have different directions.
+		</p>
+		<p align='center'>
+			<img alt="" src="images/thumbs-up-left.png" title="tag sequence"
+				height='36px' width='auto'><span style='font-size: 36px'>
+				= </span><img alt="" src="images/thumbs-up-right.png" title="tag sequence"
+				height='36px' width='auto'><img alt=""
+				src="images/tag-coda.png" title="tag sequence" height='36px'
+				width='auto'>
+		</p>
+		<p>Some characters are typically presented with a direction that
+			may be semantically significant in sequences of emoji: such as
+			pointing in the direction of an action. Unfortunately, for historical
+			reasons the “default” direction is fairly arbitrary; you see some
+			emoji pointing left &#x1f3a5; and others pointing right &#x1f4fd;.</p>
+		<p>For example, controlling the direction allows for different
+			compositions with hands around faces:</p>
+		<p align='center'>
+			<span style="font-size: 36px">…</span><img alt=""
+				src="images/thumbs-up-left.png" title="tag sequence" height='36px'
+				width='auto'><img alt="" src="images/apple_1f61c.png"
+				title="tag sequence" height='36px' width='auto'><img alt=""
+				src="images/thumbs-up-right.png" title="tag sequence" height='36px'
+				width='auto'><span style="font-size: 36px">…</span>
+		</p>
+		<p>
+			Or, when someone is trying to say “then the princess stabbed the
+			prince” when commenting on the <em>Game of Thrones,</em> it would be
+			far more natural to see (a) below rather than (b), which could be
+			interpreted as “the prince stabbed the princess”:
+		</p>
+		<p align="center">
+			<span style="font-size: 36px">a) …<img alt=""
+				src="images/apple_1f3f0.png" title="tag sequence" height='36px'
+				width='auto'>…
+			</span><img alt="" src="images/apple_1f478_1f3fc.png" title="tag sequence"
+				height='36px' width='auto'><img alt=""
+				src="images/dagger-to-right.png" title="tag sequence" height='36px'
+				width='auto'><img alt="" src="images/emojixpress_1f934.png"
+				title="tag sequence" height='40px' width='auto'><span
+				style="font-size: 36px">…</span>
+		</p>
+		<p align="center">
+			<span style="font-size: 36px">b) …<img alt=""
+				src="images/apple_1f3f0.png" title="tag sequence" height='36px'
+				width='auto'></span><span style="font-size: 36px">…</span><img alt=""
+				src="images/apple_1f478_1f3fc.png" title="tag sequence"
+				height='36px' width='auto'><img alt=""
+				src="images/image21.png" title="tag sequence" height='36px'
+				width='auto'><img alt="" src="images/emojixpress_1f934.png"
+				title="tag sequence" height='40px' width='auto'><span
+				style="font-size: 36px">…</span>
+		</p>
+		<p>The emoji tag sequences allow for both directions to be
+			expressed and interchanged.</p>
+		<p>The following is a draft list of emoji characters that would
+			allow customizations of direction:</p>
+		<table class='simple'>
+			<tr>
+				<td><pre>26CF  # 5.2 (⛏) PICK<br>2708  # 1.1 (✈) AIRPLANE<br>270B  # 6.0 (✋) RAISED HAND<br>270C  # 1.1 (✌) VICTORY HAND<br>1F3C3 # 6.0 (🏃) RUNNER<br>1F3CA # 6.0 (🏊) SWIMMER<br>1F440 # ?.0 (👀) EYES<br>1F44B # 6.0 (👋) WAVING HAND SIGN<br>1F44C # 6.0 (👌) OK HAND SIGN<br>1F44D # 6.0 (👍) THUMBS UP SIGN<br>1F44F # 6.0 (👏) CLAPPING HANDS SIGN<br>1F4A8 # 6.0 (💨) DASH SYMBOL<br>1F4AA # 6.0 (💪) FLEXED BICEPS</pre></td>
+				<td><pre>1F528 # 6.0 (🔨) HAMMER<br>1F52B # 6.0 (🔫) PISTOL<br>1F5E1 # 7.0 (🗡) DAGGER KNIFE<br>1F618 # 6.0 (😘) FACE THROWING A KISS<br>1F6AC # 6.0 (🚬) SMOKING SYMBOL<br>1F6B4 # ?.0 (🚴) BICYCLIST<br>1F6B5 # ?.0 (🚵) MOUNTAIN BICYCLIST<br>1F6B6 # 6.0 (🚶) PEDESTRIAN<br>1F918 # 8.0 (🤘) SIGN OF THE HORNS<br>1F93A # 9.0 (🤺) FENCER<br>1F93D # 9.0 (🤽) WATER POLO<br>1F93E # 9.0 (🤾) HANDBALL<br>1F946 # 9.0 (🥆) RIFLE</pre></td>
+			</tr>
+		</table>
+		<p class='reviewnote'>Review Note: There are many possible
+			characters that could usefully have direction applied to them.
+			However, we should start out with just small number of base
+			characters, and expand as necessary, probably winnowing down the
+			above list. For the initial list, characters that already typically
+			point to the left are omitted.</p>
+		<p>A major difference for the Direction customization is that the
+			images simply need to be mirrored, thus making essentially no
+			difference in the size of the font (if the technology permits).</p>
+		<p>
+			<strong>Private Use. </strong>There are also private-use tag
+			sequences, which allow for experimentation and interchange in closed
+			systems, but which are not suitable for general interchange. For more
+			information, see the <a href='#Technical_Specification'>Technical Specification</a>.
+		</p>
+
+		<p>
+			<strong>Unsupported. </strong>Where the emoji tag sequence is not
+			supported by an implementation, the tag characters are invisible and
+			occupy no space. If the implementation is aware of the tag mechanism,
+			but the sequence is invalid or the implementation does not support a
+			particular sequence, then the fallback character should be displayed
+			with a question mark superimposed, such as the following:
+		</p>
+		<p align="center">
+			<img alt="" src="images/image07.png" title="tag sequence"
+				height='36px' width='auto'><span style='font-size: 36px'>
+				= </span><img alt="" src="images/white-flag.png" title="tag sequence"
+				height='36px' width='auto'><img alt=""
+				src="images/tag-coda.png" title="tag sequence" height='36px'
+				width='auto'>
+		</p>
+		<p>That way, the recipient is notified that there is something odd
+			about the character; that it isn’t exactly what the sender intended.
+			The above appearance is not normative: the goal is have a
+			superimposed question mark, but there could be alternate appearances
+			so that the base character is less obscured. However, an
+			implementation cannot show a variant that is not specified by
+			Unicode, unless it uses a Private Use tag sequence.</p>
+		<p class="reviewnote">Review Note: one by-product of the direction
+			of this work is that the Emoji SC and UTC should focus primarily on
+			“generic” emoji characters, rather than very specific versions.</p>
+		<p class="reviewnote">Review Note: We considered various other
+			models:</p>
+		<ul class="reviewnote">
+			<li>Additional modifier characters would be possible, but there
+				is a long lead time for defining them, whereas additional keys or
+				values could be added relatively quickly: months not years.</li>
+			<li>Variation selectors could be used, except that the number is
+				constrained and they are defined as limited to only one per base.
+				This feature is built into too much software to change without
+				severe compatibility problems.</li>
+		</ul>
+
+		<h2>
+			2 <a href='#Conformance' name='Conformance'>Conformance</a>
+		</h2>
+		<p>Any Unicode-conformant implementation that implements emoji
+			tag sequences must do so as described in this document:</p>
+		<p>
+			<span class="reviewnote">Review Note: The following are draft
+				clauses, and will need to be refined.</span>
+		</p>
+		<p>
+			<strong><a name="C1" href="#C1">C1</a></strong>. <em>No emoji
+				tag sequence can be supported unless it is valid according to the
+				specifications in this document.</em>
+		</p>
+		<p>
+			<strong><a name="C2" href="#C2">C2</a></strong>. <em>Any
+				supported emoji tag sequences must be displayed with an appropriate
+				image according to the specifications in this document.</em>
+		</p>
+		<blockquote>
+			<p>For example, an emoji tag sequence for adding red hair cannot
+				change RUNNER into a SWIMMER.</p>
+		</blockquote>
+		<p>
+			<strong><a name="C3" href="#C3">C3</a></strong>. <em>Any invalid
+				or unsupported emoji tag sequence must be displayed with an
+				appropriate image according to the specifications in this document.</em>
+		</p>
+		<blockquote>
+			<p>The image should be the base character with a superimposed
+				question mark.</p>
+		</blockquote>
+		<h2>
+			3 <a href='#Technical_Specification' name='Technical_Specification'>Technical Specification</a>
+		</h2>
+		<p>This section provides a technical description for how the valid
+			tag sequences are specified.</p>
+
+		<h3>
+			3.1 <a href='#Overall_Syntax' name='Overall_Syntax'>Overall Syntax</a>
+		</h3>
+		<p>The customization syntax uses the 95 invisible TAG characters:
+		</p>
+		<p>U+E0020..U+E007F (TAG SPACE..CANCEL TAG).</p>
+		<p>
+			These correspond to ASCII characters, and may be referenced by an
+			abbreviated name of the form Tag-&lt;single-ascii-character&gt;, such
+			as Tag-U for U+E0056
+			TAG LATIN CAPITAL LETTER V. In examples, where clear, they can also
+			be represented simply by the corresponding underlined ASCII letters.
+			The tag-term can be represented by &#10022;. The regex characters ?,
+			*, + have their normal meaning.
+		</p>
+		<p>In addition, there are the following special terms:</p>
+		<table class='simple'>
+			<tbody>
+				<tr>
+					<th>Notation</th>
+					<th>Characters</th>
+					<th>Description</th>
+				</tr>
+				<tr>
+					<td>tag-base</td>
+					<td>[:emoji=yes:]</td>
+					<td>any single emoji character (w/o Regional_Indicators)</td>
+				</tr>
+				<tr>
+					<td>tag-term</td>
+					<td>U+E007F CANCEL TAG</td>
+					<td>terminating Tag &#10022;</td>
+				</tr>
+				<tr>
+					<td>tag-keyChar</td>
+					<td>Tag-A..Tag-Z</td>
+					<td>Tag characters corresponding to uppercase letters: <u>A</u>..<u>Z</u></td>
+				</tr>
+				<tr>
+					<td>tag-valChar</td>
+					<td>U+E0020..U+E0040, U+E005B..U+E007E</td>
+					<td>Tag characters that are neither tag-term nor tag-keyChar.</td>
+				</tr>
+			</tbody>
+		</table>
+		<p class="reviewnote">Review Note: the original plan was to add to
+			UTR #51 definitions ED-10a and ED-10b below, plus new terms for ED-13
+			and ED-15. However, since this document is now more generally about
+			emoji mechanisms, it may be best to move (or at least copy) other
+			definitions here (and then add these).</p>
+		<p>
+			<strong>ED-10a. emoji tag sequence</strong>
+		</p>
+		<p>A sequence consisting of an emoji character followed by one or
+			more non-terminating TAG characters, followed by a terminating TAG
+			character.</p>
+		<p>
+			<code>
+				emoji-tag-sequence&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tag-base-item
+				tag-key-value-pair+ tag-term<br>
+				tag-base-item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tag-base
+				| tag-base_variation_sequence<br>
+				tag-key-value-pair&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tag-key
+				tag-value<br>
+				tag-key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tag-keyChar+<br>
+				tag-value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tag-valueChar+
+
+			</code>
+		</p>
+		<p>
+			<strong>ED-10b. A tag-base-variation-sequence is an emoji
+				variation sequence that starts with a tag-base. </strong>
+		</p>
+		<p>
+			<em>Add emoji-tag-sequence to the following definitions in
+				UTR51: </em>
+		</p>
+		<p>
+			<strong>ED-13. emoji modifier sequence</strong>, and <strong>ED-15.
+				emoji core sequence. </strong>
+		</p>
+		<h3>Further Constraints:</h3>
+		<ul>
+			<li>The entire sequence, including the tag-base and tag-term is
+				limited to 16 characters.</li>
+			<li>Within the tag sequence, the tag-key-value-pairs must be
+				sorted in ascending code-point order of the tag-key.</li>
+			<li>Within the tag sequence, no two tag-key-value-pairs can have
+				the same tag-key.</li>
+			<li>No key can start with <u>Z</u> except a private use key.
+			</li>
+			<li>If a private use key occurs, it must be the only key.</li>
+			<li>Further structure of the tag-value is determined by the
+				tag-key.</li>
+			<li>The tag-value could have a single semantic or some more
+				complicated structure. For example, the tag-key could require sorted
+				order among characters of the tag-value</li>
+		</ul>
+		<p>
+			Thus—in ASCII terms—each key is a tag sequence that consist of one or
+			<u>A</u>..<u>Z</u> characters. So <u>A</u> is a key, as is <u>AB</u>
+			or <u>ZZ</u>. The value is any sequence of one or more characters
+			from <u>_</u> (Tag-space) to <u>~</u>, outside of <u>A</u>..<u>Z</u>.
+			For example, a tag-key-value-pair could be <u>Fusca</u>, representing
+			the key= <u>F</u> and value = <u>usca</u>. The interpretation of each
+			tag-key-value-pair depends on the tag-base, tag-key, and tag-value.
+		</p>
+		<p>
+			Example: &lt;tag-base&gt;<u>ABxAy</u>&#10022; is invalid, as is
+			&lt;tag-base&gt;<u>AxAy</u>&#10022;.
+		</p>
+		<p class="reviewnote">Review Note: the length (currently 16) is up
+			for discussion, but everyone is agreed that we need a fixed limit.</p>
+		<p class="reviewnote">Review Note: the committee considered
+			whether to have the tag-term or not. In theory, it is not necessary
+			for termination, because the tag sequence is always bounded by any
+			non-TAG characters.</p>
+		<p class="reviewnote">For font lookup, however, people didn’t want
+			to have to backup when a non-TAG character is seen. To mark the end,
+			it would be sufficient to forbid sequences that are prefixes of other
+			valid sequences. The easiest way to ensure that is to always have a
+			terminator. In some cases, it may not be necessary, but it makes
+			validity checking much easier.</p>
+		<p>This defines the well-formed emoji tag sequences. However, the
+			only currently valid sequences are those defined in the following
+			sections. All others are reserved for future use. Only certain
+			tag-keys are valid for a given tag-base, and only certain tag-values
+			are valid for the given tag-key. The tag-value may also have internal
+			syntax.</p>
+		<p>An emoji modifier that affects the customized emoji should
+			follow the complete sequence representing the customized emoji, and
+			in a sequence such as &lt;Char ZWJ Char TAG+&gt; the TAG sequence
+			applies only to the second character in the sequence.</p>
+		<p class="reviewnote">Review Note: The tag sequences that are
+			likely to have the highest priority in initial implementations are
+			likely to be the subdivision flags and the gender tags. Should we
+			remove the direction and hair color tag sequences from the first
+			version?</p>
+		<h3>
+			3.2 <a href='#Flags' name='Flags'>Flags</a>
+		</h3>
+		<h4>Syntax</h4>
+		<table class='simple'>
+			<tbody>
+				<tr>
+					<th>Tag-Base</th>
+					<td>U+1F3F3 WAVING WHITE FLAG</td>
+				</tr>
+				<tr>
+					<th>Tag-Key</th>
+					<td>Tag-V</td>
+				</tr>
+				<tr>
+					<th>Tag-Value</th>
+					<td>(Tag-0..Tag-9, Tag-a..Tag-z)+</td>
+				</tr>
+			</tbody>
+		</table>
+		<h4>Further Constraints:</h4>
+		<ol>
+			<li>The Tag-Value must be a specification of either a Unicode <a
+				href="http://unicode.org/reports/tr35/index.html#unicode_subdivision_id">subdivision_id</a><img src="http://unicode.org/img/external_link.png" alt="">
+				or a 3-digit <a
+				href="http://unicode.org/reports/tr35/index.html#unicode_region_subtag">unicode_region_subtag<img src="http://unicode.org/img/external_link.png" alt=""></a>,
+				as per [<a
+						href="#CLDR">CLDR</a>]. The only valid values are those with
+				idStatus of &quot;regular&quot; or &quot;deprecated&quot;. However,
+				the deprecated values are only included for compatibility, and should
+				not be used. The syntax also allows the 3-digit forms for future
+				compatibility, but none are currently valid.
+			</li>
+			<li>They are only lowercase letters and number TAGs: [<u>0</u>-<u>9</u>
+				<u>a</u>-<u>z</u>].
+			</li>
+			<li>Like the current regional indicators, these can request an
+				image for whatever is currently the flag of the specified subregion.
+				They are not intended to provide a mechanism for versioned
+				representations of any particular flag image.</li>
+		</ol>
+		<p>
+			Example: &lt;U+1F3F3&gt;<u>Vgbsct</u>✦ requests a flag for the
+			subdivision “gbsct”, which represents Scotland. Note that there is no
+			hyphen, and it is all lowercase, unlike the format for ISO
+			subdivisions (“GB-SCT”).
+		</p>
+		<h3>
+			3.3 <a href='#Attributes_General' name='Attributes_General'>Attributes General Info</a>
+		</h3>
+		<p>The attributes are used to request the display of an emoji
+			character to have a particular attribute. There are currently 3
+			supported types of attributes:</p>
+		<ul>
+			<li>Hair color (eg, black, blond, brown, red, gray, bald)</li>
+			<li>Gender (eg, make a runner be male vs female)</li>
+			<li>Direction (for faces with direction, hand gestures,
+				vehicles, pistol, etc.)</li>
+		</ul>
+		<h4>Further Constraints:</h4>
+		<p>The Tag-Base and tag-key-value-pair values are listed below. A
+			Tag-Base character can be in any of the listed classes. Each class
+			has a set of valid attributes. Additional classes and attributes may
+			be added in future versions.</p>
+		<p>The choice of Tag-Value characters is somewhat arbitrary, since
+			they are not visible to users. However, they are chosen to be
+			mnemonic where possible, since that is useful for internal debugging
+			(more recognizable than Tag-1, Tag-2, etc.).</p>
+		<p>
+			Additional emoji properties are added to [<a href="#emoji_data">emoji-data</a>] in support of these, with a new
+		data file <em>emoji-tags.txt</em> using the standard format. </p>
+		<h3>
+			3.4 <a href='#Gender_Attribute' name='Gender_Attribute'>Gender Attribute</a>
+		</h3>
+		<h4>Syntax</h4>
+		<table class='simple'>
+			<tbody>
+				<tr>
+					<th>Tag-Base</th>
+					<td colspan='2'>Gender_Base</td>
+				</tr>
+				<tr>
+					<th>Tag-Key</th>
+					<td colspan='2'>Tag-G</td>
+				</tr>
+				<tr>
+					<th rowspan='5'>Tag-Value</th>
+					<td colspan='2'>Exactly one of the following tag-valueChars:</td>
+				</tr>
+				<tr>
+					<th>tag-valueChar</th>
+					<th>Description</th>
+				</tr>
+				<tr>
+					<td>Tag-m</td>
+					<td>Male appearance</td>
+				</tr>
+				<tr>
+					<td>Tag-f</td>
+					<td>Female appearance</td>
+				</tr>
+				<tr>
+					<td>Tag-n</td>
+					<td>Gender-neutral: neither male nor female appearance</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			<em>Examples: </em>
+		</p>
+		<blockquote>
+			<p>
+				Male Runner: 🏃<u>Gm</u>✦
+			</p>
+			<p>
+				Female Runner: 🏃<u>Gf</u>✦
+			</p>
+		</blockquote>
+		<h3>
+			3.5 <a href='#Hair_Attribute' name='Hair_Attribute'>Hair Attribute</a>
+		</h3>
+		<h4>Syntax</h4>
+		<table class='simple'>
+			<tbody>
+				<tr>
+					<th>Tag-Base</th>
+					<td colspan='2'>Hair_Base</td>
+				</tr>
+				<tr>
+					<th>Tag-Key</th>
+					<td colspan='2'>Tag-H</td>
+				</tr>
+				<tr>
+					<th rowspan='8'>Tag-Value</th>
+					<td colspan='2'>Exactly one of the following tag-valueChars:</td>
+				</tr>
+				<tr>
+					<th>tag-valueChar</th>
+					<th>Description</th>
+				</tr>
+				<tr>
+					<td>Tag-k</td>
+					<td>Black-haired</td>
+				</tr>
+				<tr>
+					<td>Tag-s</td>
+					<td>Blonde (also sandy-haired)</td>
+				</tr>
+				<tr>
+					<td>Tag-b</td>
+					<td>Brown (Brunette)</td>
+				</tr>
+				<tr>
+					<td>Tag-r</td>
+					<td>Redhead (Ginger)</td>
+				</tr>
+				<tr>
+					<td>Tag-g</td>
+					<td>Gray-haired</td>
+				</tr>
+				<tr>
+					<td>Tag-n</td>
+					<td>Bald (no hair)</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			<em>Example: </em>
+		</p>
+		<blockquote>
+			<p>
+				Red-haired Female Runner: 🏃<u>GfHr</u>✦
+			</p>
+		</blockquote>
+
+		<h3>
+			3.6 <a href='#Direction_Attribute' name='Direction_Attribute'>Direction Attribute</a>
+		</h3>
+		<h4>Syntax</h4>
+		<table class='simple'>
+			<tbody>
+				<tr>
+					<th>Tag-Base</th>
+					<td colspan='2'>Direction_Base</td>
+				</tr>
+				<tr>
+					<th>Tag-Key</th>
+					<td colspan='2'>Tag-D</td>
+				</tr>
+				<tr>
+					<th rowspan='4'>Tag-Value</th>
+					<td colspan='2'>Exactly one of the following tag-valueChars:</td>
+				</tr>
+				<tr>
+					<th>tag-valueChar</th>
+					<th>Description</th>
+				</tr>
+				<tr>
+					<td>Tag-r</td>
+					<td>Point-Right</td>
+				</tr>
+				<tr>
+					<td>Tag-l</td>
+					<td>Point-Left</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>The Tag directions are to have a mirrored effect in a bidi
+			context. All emoji characters are Bidi_Class=Other_Neutral (except
+			for the enclosed alphanumerics).</p>
+		<p>
+			<em>Example: </em>
+		</p>
+		<blockquote>
+			<p>
+				Red-haired Female Runner facing Right: 🏃<u>DrGrHr</u>✦
+			</p>
+		</blockquote>
+
+		<h3>
+			3.7 <a href='#Private_Use' name='Private_Use'>Private Use</a>
+		</h3>
+		<p>Private Use tag sequences are for closed interchange within a
+			given system. As with private use codes in general, the tag sequence
+			may have no meaning or a different meaning outside that system, so it
+			is not suitable for general interchange. Any key starting with Tag-Z
+			qualifies, and any tag-value.</p>
+		<h4>Syntax</h4>
+		<table class='simple'>
+			<tbody>
+				<tr>
+					<th>Tag-Base</th>
+					<td>emoji-character</td>
+				</tr>
+				<tr>
+					<th>Tag-Key</th>
+					<td>Tag-Z tag-keyChar*</td>
+				</tr>
+				<tr>
+					<th>Tag-Value</th>
+					<td>tag-valChar+</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			<em>Example: </em>
+		</p>
+		<blockquote>
+			<p>
+				Private use runner with ski boots: 🏃<u>Zskiboots</u>✦
+			</p>
+		</blockquote>
+		<p>Implementations should consider the use of any of the thousands
+			of private use Unicode characters instead. However, the advantages of
+			Private Use emoji customizations include:</p>
+		<ul>
+			<li>there is a fallback to display of the base emoji character,
+				instead of showing a black box;</li>
+			<li>a customized emoji sequence has defined properties that
+				depend on the base emoji character, while for private-use Unicode
+				characters the generic properties assigned by the Unicode Standard
+				may not be appropriate for the way the character is being used (thus
+				possibly requiring an override of standard Unicode properties —
+				which may not be feasible).</li>
+		</ul>
+
+		<h2>
+			4 <a href='#Implementation_Notes' name='Implementation_Notes'>Implementation Notes</a>
+		</h2>
+		<p>
+			The hair color, gender, and emoji-modifiers could, in theory, be
+			mixed, resulting in a combinatorial explosion of glyphs in fonts. It
+			is anticipated that only certain combinations would be supported
+			generally until the technology supports them without a massive size
+			increase. There are a few possible avenues. One is the “<a
+				href="https://www.google.com/url?q=https://en.wikipedia.org/wiki/Mx_(title)&amp;sa=D&amp;ust=1455031838116000&amp;usg=AFQjCNEe_TCP_XSbi-d-6tn0rQpW8fSoEg">Mr(s)</a><img src="http://unicode.org/img/external_link.png" alt="">
+			Potato Head” approach, whereby glyph pieces are assembled for a
+			particular image. For example, there might be some different color
+			hair styles that would be appropriate for overlaying on a RUNNER
+			emoji. These could then be used to create male and female variants.
+		</p>
+		<p>A more general approach is to allow override of the color
+			palettes in the images in the font. With this approach, exactly the
+			same image of a girl can be used with many combinations of hair and
+			skin color, for example.</p>
+		<p>If the rendering engine can mirror images in the font, then the
+			direction can also be supported generally with little size overhead.
+		</p>
+		<h2>
+			<a name="Acknowledgements" href="#Acknowledgements">Acknowledgments</a>
+		</h2>
+		<p>Mark Davis and Peter Edberg created the initial versions of
+			this document, and maintain the text.</p>
+		<p>Thanks to Jeremy Burge, Peter Constable, Craig Cummings, Doug
+			Ewell, Tayfun Karadeniz, Ken Lunde, Rick McGowan, Katsuhiko Momoi,
+			Roozbeh Pournader, Markus Scherer, and Ken Whistler for feedback on
+			and contributions to this document.</p>
+		<h2>
+			<a name="References" href="#References">References</a>
+		</h2>
+		<table cellspacing="0" cellpadding="4" border="0" class="noborder"
+			style="border-collapse: collapse">
+			<!-- nocaption -->
+			<tbody>
+				<tr>
+					<td class="noborder" valign="top">[<a class="nolink"
+						name="CLDR" href="#CLDR">CLDR</a>]
+					</td>
+					<td class="noborder" valign="top">CLDR - Unicode Common Locale
+						Data Repository<br> <a target="_blank" href="http://cldr.org">http://cldr.unicode.org/</a>
+						<em><br> For the latest version of the associated
+							specification (LDML), see:</em><br> <a
+						href='http://unicode.org/reports/tr35/'>http://www.unicode.org/reports/tr35/</a>
+					</td>
+				</tr>
+				<tr>
+					<td class="noborder nowrap" valign="top">[<a class="nolink"
+						name="emoji_charts" href="#emoji_charts">emoji-charts</a>]
+					</td>
+					<td class="noborder" valign="top">The illustrative charts of
+						emoji<br> <a href='../../emoji/charts/index.html'>http://unicode.org/emoji/charts/index.html</a>
+					</td>
+				</tr>
+				<tr>
+					<td class="noborder nowrap" valign="top">[<a class="nolink"
+						name="emoji_data" href="#emoji_data">emoji-data</a>]
+					</td>
+					<td class="noborder" valign="top">The associated data file
+						for emoji tag sequences<br>						For the draft version, see <br>
+				        <a href='http://unicode.org/reports/tr52/emoji-tags.txt'>http://unicode.org/reports/tr52/emoji-tags.txt</a><br>
+					</td>
+				</tr>
+				<tr>
+					<td class="noborder" valign="top">[<a class="nolink"
+						name="Unicode" href="#Unicode">Unicode</a>]
+					</td>
+					<td class="noborder" valign="top">The Unicode Standard<br>
+						<em>For the latest version, see:</em><br> <a
+						href="http://unicode.org/versions/latest/">http://unicode.org/versions/latest/</a></td>
+				</tr>
+			</tbody>
+		</table>
+		<h2>
+			<a name="Modifications" href="#Modifications">Modifications</a>
+		</h2>
+		<p>The following summarizes modifications from the previous
+			revisions of this document.</p>
+		<p class="changed">
+			<strong>Revision 1</strong>
+		</p>
+		<ul class="changed">
+			<li>Created the initial draft based upon UTC documents, after
+				discussion.</li>
+		</ul>
+		<hr width="50%">
+		<p class="copyright">
+			<font size="-1">Copyright © 2016 Unicode, Inc. All Rights
+				Reserved. The Unicode Consortium makes no expressed or implied
+				warranty of any kind, and assumes no liability for errors or
+				omissions. No liability is assumed for incidental and consequential
+				damages in connection with or arising out of the use of the
+				information or programs contained or accompanying this technical
+				report. The Unicode <a href="http://unicode.org/copyright.html">Terms
+					of Use</a> apply.
+			</font>
+		</p>
+		<p class="copyright">
+			<font size="-1">Unicode and the Unicode logo are trademarks of
+				Unicode, Inc., and are registered in some jurisdictions.</font>
+		</p>
+	</div>
+</body>
+</html>

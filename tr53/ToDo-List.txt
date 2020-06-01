@@ -1,0 +1,75 @@
+2018-10-05
+
+UTR #53 notes.
+
+This file contains items that are to be done later.
+It was started after Revision 4 was published as the
+first approved version.
+
+
+---------------------------------------------
+
+Email from Julie, October 3, 2018.
+
+These notes for post Revision 4, to do at next update.
+
+Ken, Rick,
+
+Lorna provided an updated document. I see a few other places where
+titlecasing is needed or where some rewording might help, but would like a
+second glance from Ken. This is my list of suggestions. If it's too early to
+worry about some of this, that's fine. Rick has the updated draft. We can
+forward it to you, if you want to take a look. I'm assuming Rick could just
+make these changes, so Lorna can be done for now.
+
+--Julie
+
+Yet-to-be-encoded => Yet-to-be-Encoded (TOC and in text as header)
+
+Section 5.13, Unknown and Missing Characters, Section 7.9, Combining Marks,
+and Section 9.2, Arabic => italicize the "Section x.y," parts of all of
+these
+
+Same thing later for another use of Section 9.2, Arabic
+
+For use by this algorithm, this specification defines a group of combining
+marks called “Modifier Combining Marks” (MCM). => flip the sentence to read,
+"This specification defines a group of combining marks called “Modifier
+Combining Marks” (MCM) for use by this algorithm."
+
+It puts a sukun over a seen above. If an orthography needs to put the seen
+above over the sukun => I wonder if we should use "place" rather than "put"
+(might be something to search for if we make the change)
+
+Similarly, " the meem is normally kept after fatha" --maybe "kept after"
+isn't the best word choice?
+
+However, since the combining class for the sukun is 34 => change since to
+because
+
+Sukun alternate forms => titlecase alternate and forms
+
+Em-dash -- close up spaces on each side (this may occur a couple times)
+
+If the algorithm were to use NFC instead, the sequence <alef, superscript
+alef, madda> would have resulted in a different order than => I think the
+tense is off here. Maybe, "If the algorithm had used..."?
+
+some lesser known orthography =>lesser-known
+
+There is no intention or expectation that AMTRA would be applied to stored
+text. =>AMTRA is not intended or expected to be applied to stored text.
+
+As an example, =>For example,
+
+users may have an expectation that => users may expect that
+
+
+
+---------------------------------------------
+
+
+
+
+
+

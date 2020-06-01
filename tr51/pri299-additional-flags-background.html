@@ -1,0 +1,368 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta content="en-us" http-equiv="Content-Language" />
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<meta http-equiv="refresh" content="43200" />
+<title>PRI #299 Background: Representing Additional Types of Flags</title>
+<style type="text/css">
+h2 {
+	font-size: large;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-weight: bold;
+	margin-top: 8px;
+}
+
+h2 a:link, h3 a:link, h4 a:link, h5 a:link, p.caption a:link, caption a:link,
+	h2 a:visited, h3 a:visited, h4 a:visited, h5 a:visited, p.caption a:visited,
+	caption a:visited {
+	color: black;
+	text-decoration: none;
+}
+
+a:link {
+	color: red;
+}
+
+.changed {
+	background-color: #FFFF00;
+	border-style: dotted;
+	border-width: 1px;
+}
+
+.removed {
+	text-decoration: line-through;
+	background-color: #FFFF00;
+	border-style: dotted;
+	border-width: 1px;
+}
+
+.reviewnote {
+	background-color: #FFFF80;
+	color: #CC0000;
+	border-style: dashed;
+	border-width: 1px;
+}
+
+table {
+	border-spacing: 0;
+	border-collapse: collapse;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+}
+
+th {
+	background-color: #EEE;
+}
+
+th, td {
+	border-spacing: 0;
+	border-collapse: collapse;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+	color: black;
+	vertical-align: top;
+	text-align: left;
+}
+
+.imgb {
+	width: 24px;
+	height: 24px;
+	margin-top: 1px;
+	margin-bottom: 1px;
+	vertical-align: text-bottom;
+}
+
+p {
+	margin-top: 6pt;
+	margin-bottom: 0;
+}
+
+p:first-child {
+	margin-top: 0pt;
+}
+</style>
+</head>
+
+<body>
+
+	<h2>PRI #299 Background: Representing Additional Types of Flags</h2>
+	<h4>Last updated: 2015-06-29</h4>
+
+	<h2>A. Background</h2>
+
+	<p>The Unicode Standard already provides a mechanism to represent flags
+		using pairs of REGIONAL INDICATOR symbols U+1F1E6..U+1F1FF, which
+		were added in Unicode 6.0. The mechanism is documented in the current
+		text of the standard and covered in
+		<a target='_blank' href="http://www.unicode.org/reports/tr51/#Flags">Annex B</a>
+		of UTR #51.</p>
+
+	<p>On several systems, pairs of REGIONAL INDICATOR symbols are used to
+		represent up to more than 200 flags as emoji. These pairs correspond to
+		<a target='_blank' href="http://www.unicode.org/reports/tr35/#unicode_region_subtag">unicode_region_subtag</a>
+		two-letter codes, which can represent some regions such as Isle of Man,
+		Guernsey, and Puerto Rico but not others, such as England, Scotland, Wales,
+		U.S. states, or Russian Federation republics.</p>
+
+	<p>The unicode_region_subtags defined in CLDR are based on
+		<a target='_blank' href="https://tools.ietf.org/html/bcp47">BCP47</a>,
+		which is in turn based on ISO 3166-1 and
+		<a target='_blank' href="http://unstats.un.org/unsd/methods/m49/m49regin.htm">UN M49</a>
+		codes.</p>
+
+	<p>On some platforms that support a number of emoji flags, there is
+		substantial demand to support additional flags beyond those defined for
+		unicode_region_subtags, such as for the following:</p>
+	<ul>
+		<li>“Country subdivisions” such as England, Scotland, Wales, U.S. states, and Russian Federation republics.</li>
+		<li>Certain supra-national organizations such the United Nations.</li>
+		<li>Certain 3 digit regional codes, used in BCP47 to stabilize ISO 3166-1 codes.</li>
+	</ul>
+
+	<h2>B. Proposal</h2>
+
+	<p>This proposal describes a mechanism for representing
+		<a target='_blank' href="http://www.unicode.org/reports/tr35/#unicode_region_subtag">unicode_region_subtag</a>s
+		and
+		<a href="#unicode_subdivision_subtag">unicode_subdivision_subtag</a>s
+		with TAG characters for designating flags. The proposal will extend
+		<a target='_blank' href="http://www.unicode.org/reports/tr51/">UTR #51</a>
+		and includes several parts:</p>
+	<ol>
+		<li>Use the TAG characters E0030..E0039 (TAG DIGITs) and E0041..E005A
+			(TAG LATIN CAPITAL LETTERs). These TAG characters are default-ignorable,
+			without any visible representation by themselves.</li>
+
+		<li style="margin-top:10px;">Designate the character U+1F3F3 WAVING WHITE
+			FLAG as the “base” for a subsequent sequence of TAG characters. This
+			character already encoded, with general category value So.
+			<ul>
+				<li>This base character is a visible spacing character that
+					suggests a flag, so that implementations that do not support
+					the TAG characters have an indication that a flag is present.</li>
+			</ul></li>
+
+		<li style="margin-top:10px;">Define valid sequences as the base character
+			followed by a sequence of TAG characters, as specified by either of the
+			following conditions:
+			<ul>
+				<li>A sequence of three TAG DIGIT characters designating a
+					unicode_region_subtag.
+					<ul>
+						<li>This is needed primarily to handle cases in which
+							ISO 3166-1 reassigns 2-letter codes that are already in
+							the BCP 47 registry. It may also be used to designate
+							flags for certain supra-national organizations. See
+							the discussion below.</li>
+					</ul></li>
+				<li>A sequence of TAG characters that correspond to a valid
+					unicode_region_subtag followed by a unicode_subdivision_subtag,
+					where the latter is valid for that region.
+					<ul>
+						<li>The hyphen used in ISO 3166-2 syntax is not necessary
+							to separate the two parts.</li>
+					</ul></li>
+			</ul></li>
+
+		<li style="margin-top:10px;">Provide guidelines and constraints for the
+			use of the TAG sequences, to help ensure stable and non-redundant
+			representation of regions and regional subdivisions:
+			<ul>
+				<li>UTR #51 already specifies that only those codes valid for the
+					LDML unicode_region_subtag are used with regional indicators.
+					<ul>
+						<li>This prevents multiple representation of many regions
+							which have both an ISO 3166-1 code and a UN M49 code,
+							and provides management of code deprecation, etc.).</li>
+						<li>Note that this <em>allows</em> the “exceptionally reserved”
+							code EU (European Union), but does <em>not</em> allow the
+							“exceptionally reserved” code UN (United Nations).</li>
+					</ul></li>
+				<li>In CLDR 28 (September, 2015), LDML will define a
+					unicode_subdivision_subtag, which also provides validity criteria
+					for the codes used for regional subdivisions. These subdivision
+					codes are based on
+					<a target='_blank' href="http://www.iso.org/iso/catalogue_detail?csnumber=63546">ISO 3166-2</a>,
+					but also provide stability. Only valid LDML
+					unicode_subdivision_subtags can be used to represent regional 
+					subdivision flags.
+					<ul>
+						<li>For example, ISO 3166-2 defines “GB-SCT” for Scotland,
+							“GB-WLS” for Wales, “US-DE” for Delaware, and “NO-18”
+							for Nordland (in Norway).</li>
+						<li>Note that a particular unicode_subdivision_subtag may
+							be deprecated, but will not be removed, and thus
+							forever remains valid (though discouraged).</li>
+					</ul></li>
+			</ul></li>
+	</ol>
+
+	<h2>C. Syntax</h2>
+
+	<p>The syntax for well-formed subdivision flags is:</p>
+	<blockquote>
+		<p><code>B((TL{2} (TL|TD){1,4})  | (TD{3} (TL|TD){1,4}?))</code></p>
+	</blockquote>
+
+	<p>This uses the following notation:</p>
+	<blockquote>
+		<table>
+			<tr><td width="8%"><code>B</code></td><td>designates the chosen base character (U+1F3F3)</td></tr>
+			<tr><td width="8%"><code>TL</code></td><td>designates a TAG LATIN CAPITAL LETTER (A..Z)</td></tr>
+			<tr><td width="8%"><code>TD</code></td><td>designates a TAG DIGIT (ZERO..NINE)</td></tr>
+		</table>
+	</blockquote>
+
+	<p>Not all syntactically well-formed TAG sequences correspond to an actual
+		flag—only a defined subset can be used. </p>
+
+	<h2>D. Text break considerations</h2>
+
+	<p>The TAG characters have general category value Cf and line break property
+		value CM. Consequently, the proposed base character followed by a sequence
+		of TAG characters is already treated as a unit for word, sentence, and
+		line break. Grapheme break property values and rules would need some
+		adjustment; until those are updated in
+		<a target='_blank' href="http://www.unicode.org/reports/tr29/">UAX #29</a>,
+		implementations could use a tailored grapheme break to handle these
+		correctly.</p>
+
+	<p>The proposal will add language to UTR #51 recommending that each
+		REGIONAL INDICATOR pair used to designate a flag be followed by
+		U+200C ZERO WIDTH NON-JOINER (ZWNJ) to facilitate text break.
+		ZWNJ is in the Extend class for grapheme and word break, and will
+		thus be included in a grapheme or word with the preceding
+		REGIONAL INDICATORs.</p>
+
+	<h2>E. Discussion</h2>
+	<ol>
+		<li>Note that TAG sequences <em>could</em> also be used to designate
+			flags corresponding to two-letter
+			<a target='_blank' href="http://www.unicode.org/reports/tr35/#unicode_region_subtag">unicode_region_subtag</a>s,
+			using the base character followed by two TAG LATIN CAPITAL LETTERs.
+			This alternative to the use of paired REGIONAL INDICATOR SYMBOL
+			letters to designate unicode_region_subtags has better inherent
+			behavior for text break. However, doing so would result in two
+			possible representations for many flags, so is not recommended.
+			Note that the TAG sequences do allow for 3-digit region codes for
+			the case where ISO destabilizes codes, by allowing the use of
+			the three digit forms from BCP47.</li>
+
+		<li style="margin-top:10px;">Instead of using U+1F3F3 WAVING WHITE FLAG
+			as the base for a TAG sequence, an alternative possibility is
+			encoding a new character, perhaps U+1F1E5 REGIONAL FLAG BASE.
+			Encoding a new character would delay support for the desired flags
+			until it could be encoded (and the character alone would still need
+			some sort of representation as a flag), so is not recommended.</li>
+
+		<li style="margin-top:10px;">A special fallback appearance should be
+			used for the base followed by any unsupported or invalid sequence
+			of TAG characters. The recommended glyph for the fallback is
+			U+1F3F3 WAVING WHITE FLAG in a dotted rectangle.</li>
+
+		<li style="margin-top:10px;">Use of UN M49 codes to designate flags
+			for supra-national and international organizations requires
+			additional guidelines. For many M49 codes that designate
+			supra-national regions, there is no reasonable flag; for others
+			there are several possibilities, but all may have some political
+			issues. For example:
+			<ul>
+				<li>Representing the UN flag: One possibility is to use
+					region 001 (World). However, region 001 could be
+					associated with many other organizations as well;
+					and some people may have political objections to
+					using the UN flag to represent the world.</li>
+			</ul></li>
+
+		<li style="margin-top:10px;">It is not anticipated—by any means—that
+			flags for all or even most subdivision codes would be supported.
+			Many subdivisions don’t have flags, or don’t have widely
+			recognized flags. We would expect that certainly initially,
+			and perhaps long term, only a relatively small number of
+			subdivision flags would be widely supported and deployed.</li>
+	</ol>
+	
+	<hr/>
+	<h2>Appendix: Material for CLDR 28 LDML specification</h2>
+	<p>The following material has already been added to a
+		<a target='_blank' href="http://unicode.org/reports/tr35/proposed.html">draft version</a>
+		of UTS #35, the Unicode LDML specification, for CLDR version 28; it may be
+		refined before the release of CLDR 28 in September 2015. The subdivisionContainment
+		data mentioned below will also be in the CLDR 28 file in subdivisions.xml.
+		This preliminary material is included here for reference only and is not part of
+		Public Review Issue 299; feedback on this preliminary material can be provided as
+		described in the Status section of the UTS #35 draft version.</p>
+	<br/><br/>
+
+	<table border="0">
+		<tr>
+			<th>&nbsp;</th>
+			<th><div align="center">EBNF</div></th>
+			<th><div align="center">ABNF</div></th>
+		</tr>
+		<tr>
+			<td>...</td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td><code><a name="unicode_subdivision_subtag">unicode_subdivision_subtag</a></code></td>
+			<td><code> = (alphanum{1,4} ;</code></td>
+			<td><code>= 1*4alphanum</code></td>
+		</tr>
+		<tr>
+			<td>...</td>
+			<td></td>
+			<td></td>
+		</tr>
+	</table>
+
+	<h4><a href="#Unicode_Subdivision_Codes"
+		name="Unicode_Subdivision_Codes">3.6.5 Subdivision Codes</a></h4>
+
+	<p>The subdivision codes are based on ISO 3166-2 codes, which
+		have 1..3 ASCII letters or digits. Like BCP47, CLDR needs stable codes, which
+		are not guaranteed for ISO 3166-2 (nor have they been stable in the past).</p>
+
+	<p>CLDR thus adds 4-character sequences, also ASCII letters or
+		digits, which can be used for stability. If an ISO 3166-2 code is removed,
+		it remains valid (though marked as deprecated) in CLDR. If an ICU 3166-2 code
+		is reused for a different subdivision (within the same region), then CLDR
+		will define a new equivalent code using these 4-character sequences.</p>
+
+	<p>...</p>
+
+	<p>A unicode_subdivision_subtag is valid for a
+	  	<a target='_blank' href="http://www.unicode.org/reports/tr35/#unicode_region_subtag">unicode_region_subtag</a>
+	  	only when the <strong>subdivisionContainment</strong> element contains a
+	  	<strong>subgroup</strong> element where:</p>
+
+	<ol>
+	    <li>the <strong>type</strong> attribute value is that
+	    	<a target='_blank' href="http://www.unicode.org/reports/tr35/#unicode_region_subtag">unicode_region_subtag</a>,
+	    	and</li>
+	    <li>the <strong>contains</strong> attribute value  contains the
+	    	unicode_subdivision_subtag.
+	    	<ul>
+	        	<li>The <strong>contains</strong> attribute value is a space-delimited
+	        		set, and compared case-insensitively.</li>
+         	</ul></li>
+	</ol>
+
+	<p>For example, the subdivision “ca” (and “CA”) is valid for the
+		region “US” because of the following element:</p>
+
+	<p align="center"> <code>&lt;subgroup type=&quot;US&quot;
+		contains=&quot;… CA …&quot;/&gt;</code></p>
+
+	<p>...</p>
+
+</body>
+
+</html>

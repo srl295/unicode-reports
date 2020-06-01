@@ -1,0 +1,8 @@
+CKC
+::MKC;
+// Apply NFD to: any LV character that is preceded by an L or followed by a V or T.
+// Apply NFD to: any LVT character that is preceded by an L or followed by a T.
+
+[:HST=L:] { ([[:HST=LV:][:HST=LVT:]]) } > &nfd($1) ;
+{ ([[:HST=LV:][:HST=LVT:]]) } [:HST=T:] > &nfd($1) ;
+{ ([:HST=LV:]) } [:HST=V:] > &nfd($1) ;

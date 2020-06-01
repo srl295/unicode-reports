@@ -1,0 +1,7 @@
+MKKC
+$compatL = [\u3131-\u314E \uFFA1-\uFFBE] ; # define the equivalent of L
+
+{ \u3131 } $compatL > \u11A8 ; # HANGUL JONGSEONG KIYEOK
+{ \uFFA1 } $compatL > \u11A8 ; # HANGUL JONGSEONG KIYEOK
+
+# TODO: fill out the rest of the rules for all the compatL characters

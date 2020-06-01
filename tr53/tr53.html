@@ -1,0 +1,719 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+	"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" href="http://www.unicode.org/reports/reports-v2.css" type="text/css">
+<title>UTR #53: Unicode Arabic Mark Rendering</title>
+
+</head>
+
+<body>
+
+<table class="header" cellpadding="0" cellspacing="0" width="100%">
+  <tr>
+    <td class="icon"><a href="http://www.unicode.org"><img align="middle" alt="[Unicode]" border="0" src="http://www.unicode.org/webscripts/logo60s2.gif" width="34" height="33"></a>&nbsp;&nbsp;<a class="bar" href="http://www.unicode.org/reports">Technical Reports</a></td>
+  </tr>
+  <tr>
+    <td class="gray">&nbsp;</td>
+  </tr>
+</table>
+<div class="body">
+		<h2 align="center">Unicode Technical Report #53</h2>
+		<h1 align="center">UNICODE ARABIC MARK RENDERING</h1>
+		<table class="simple" width="90%">
+			<tr>
+				<td valign="TOP" width="20%">Authors</td>
+				<td valign="TOP">Roozbeh Pournader (<a href="mailto:roozbeh@unicode.org">roozbeh@unicode.org</a>), Bob Hallissy (<a href="mailto:bob_hallissy@sil.org">bob_hallissy@sil.org</a>), Lorna Evans (<a href="mailto:lorna_evans@sil.org">lorna_evans@sil.org</a>)
+</td>
+			</tr>
+			<tr>
+				<td valign="TOP" width="20%">Date</td>
+				<td valign="TOP">2018-10-02</td>
+			</tr>
+			<tr>
+				<td valign="TOP" width="20%">This Version</td>
+				<td valign="TOP">
+				<a href="http://www.unicode.org/reports/tr53/tr53-4.html">http://www.unicode.org/reports/tr53/tr53-4.html</a></td>
+			</tr>
+			<tr>
+				<td valign="TOP" width="20%">Previous Version</td>
+				<td valign="TOP">n/a</td>
+			</tr>
+			<tr>
+				<td valign="TOP" width="20%">Latest Version</td>
+				<td valign="TOP"><a href="http://www.unicode.org/reports/tr53/">http://www.unicode.org/reports/tr53/</a></td>
+			</tr>
+			<tr>
+				<td valign="TOP" width="20%">Latest Proposed Update</td>
+				<td valign="TOP">
+				<a href="http://www.unicode.org/reports/tr53/proposed.html">http://www.unicode.org/reports/tr53/proposed.html</a></td>
+			</tr>
+			<tr>
+				<td valign="TOP" width="20%">Revision</td>
+				<td valign="TOP"><a href="#Modifications">4</a></td>
+			</tr>
+
+
+		</table>
+		
+		
+<p>&nbsp;</p>
+
+	<!-- BEGIN OF DOCUMENT FRONT MATTER -->
+	<h4><a name="Summary" href="#Summary">Summary</a></h4>
+	<p><i>This technical report specifies an algorithm that can be utilized during rendering 
+		            for determining correct display of Arabic combining mark sequences. </i></p>
+<p><i>This UTR makes no change to Unicode 
+	                normalization forms, and does not propose a new normalization form. Instead, this is 
+	                similar to the processing used in [<a href="#MicrosoftUSE">MicrosoftUSE</a>]:  
+	                a transient process which is used to reorder text for display in an internal rendering pipeline. 
+	                This reordering is not intended for modifying original text, nor for open interchange.</i></p>
+
+	<h4>Status</h4>
+	<!-- NOT YET APPROVED 
+	<p><i>This is a<b><font color="#FF3333"> draft
+	</font></b>document which may be updated, replaced, or 
+	superseded by other documents at any time. Publication does not imply
+	endorsement by the Unicode Consortium. This is not a stable document; it is 
+    inappropriate to cite this document as other than a work in progress.</i></p>
+
+    END NOT YET APPROVED -->
+    <!-- Retain the paragraph below, which is used when a draft is finalized. -->
+	<!-- APPROVED -->
+	<p><i>This document has been reviewed by Unicode members 
+	and other interested
+	parties, and has been approved for publication by the Unicode Consortium.
+	This is a stable document and may be used as reference material or cited as
+	a normative reference by other specifications.</i></p>
+	<!-- END APPROVED -->
+
+
+
+    <blockquote>
+		<p><i><b>A Unicode Technical Report (UTR) 
+						</b>contains 
+            informative material. Conformance to the Unicode Standard does not 
+            imply conformance to any UTR. Other specifications, however, are 
+            free to make normative references to a UTR.</i></p>
+ </blockquote>           
+
+		<p><i>Please submit corrigenda and other comments with the online reporting  
+  form [<a href="#Feedback">Feedback</a>]. Related information that is useful in  
+  understanding this document is found in the <a href="#References">References</a>.  
+  For the latest version of the Unicode Standard see [<a href="#Unicode">Unicode</a>].  
+  For a list of current Unicode Technical Reports see [<a href="#Reports">Reports</a>].  
+  For more information about versions of the Unicode Standard, see [<a href="#Versions">Versions</a>].</i></p>
+
+		<h4 class="contents">Contents</h4>
+		       <ul class="toc">
+			<li>1&nbsp; <a href="#Overview">Overview</a></li>
+			<li>2&nbsp; <a href="#Background">Background</a></li>
+			<li>3&nbsp; <a href="#AMTRA_Description">Description of the Algorithm</a>
+				<ul class="toc">
+					<li>3.1&nbsp; <a href="#MCM">Modifier Combining Marks (MCM)</a></li>
+				   <li>3.2&nbsp; <a href="#AMTRA_Specification">Specification of AMTRA</a></li>
+				</ul>
+			</li>
+			<li>4&nbsp; <a href="#Demonstrating_AMTRA">Demonstrating AMTRA</a>
+				<ul class="toc">
+				<li>4.1&nbsp; <a href="#Test_Case">Artificial Test Case</a></li>
+				<li>4.2&nbsp; <a href="#Override">Override Mechanism for Exceptions</a></li>
+				<li>4.3&nbsp; <a href="#Examples">Examples</a></li>
+				</ul>
+			</li>
+			<li>5&nbsp; <a href="#Supplemental_Information">Supplemental Information</a>
+				<ul class="toc">
+				<li>5.1&nbsp; <a href="#NFD_NFC">Use of NFD and Not NFC</a></li>
+				<li>5.2&nbsp; <a href="#Shadda">Shadda</a></li>
+				<li>5.3&nbsp; <a href="#Kasra">Kasra and Kasra-like Characters</a></li>
+				<li>5.4&nbsp; <a href="#Rationale">Rationale for Exclusion of Some Marks</a></li>
+				<li>5.5&nbsp; <a href="#Dotted_circles">Dotted Circles</a></li>
+				<li>5.6&nbsp; <a href="#Other">Other Uses for AMTRA</a></li>
+				<li>5.7&nbsp; <a href="#Combining">Best Combining Classes for Yet-to-be-encoded Combining Marks in Arabic</a></li>
+	           </ul>
+	        </li>
+			<li><a href="#References">References</a> </li>
+			<li><a href="#Modifications">Modifications</a> </li>
+</ul>
+		<hr>
+
+    <!-- BEGIN OF DOCUMENT CONTENTS PROPER -->
+
+  		<h2>1 <a name="Overview" href="#Overview">Overview</a></h2>
+		<p>The combining classes of Arabic 
+			combining characters in Unicode are different than combining classes in most other 
+			scripts. They are a mixture of special classes for specific marks plus two more 
+			generalized classes for all the other marks. This has resulted in inconsistent and/or 
+			incorrect rendering for sequences with multiple combining marks since Unicode 2.0.</p>
+		<p>The Arabic Mark Transient Reordering 
+			Algorithm (AMTRA) described herein is the recommended solution to achieving correct 
+			and consistent rendering of Arabic combining mark sequences. This algorithm provides 
+			results that match user expectations and assures that canonically equivalent sequences are 
+			rendered identically, independent of the order of the combining marks. </p>
+
+ 		<h2>2 <a name="Background" href="#Background">Background</a></h2>
+<p>Rules and recommendations for the correct display of combining marks are discussed in a number of places in the Unicode Standard, 
+	including Section 5.13, <i>Unknown and Missing Characters</i>, Section 7.9, <i>Combining Marks</i>, and Section 9.2, <i>Arabic</i> [<a href="#Unicode">Unicode</a>]. Some general principles include:</p>
+<ul>
+	<li>Canonically equivalent sequences should display the same.</li>
+	<li>Combining marks from the same combining class are normally displayed using the <i>inside-out</i> rule, that is, from the base outward.</li>
+	<li>Combining marks from different combining classes (other than ccc=0) may be re-ordered with respect to each other if that helps to achieve the desired display.</li>
+</ul>
+<p>In Unicode, the Arabic script combining marks include eleven different non-zero canonical combining class values, as shown in Table 1. When a combining character sequence includes marks from more than one of these classes, the rendering system has to determine a display order in which to position these marks on the base character.</p>
+
+<p>While it might be tempting to just use NFC or NFD, neither of these normalization forms will yield what Arabic readers expect. For one example that will be easily understood by all readers of Arabic script, given a combining character sequence including a <i>shadda</i> (ccc=33) and <i>damma</i> (ccc=31), NFC and NFD will move the <i>damma</i> before the <i>shadda</i>—at which point the default inside-out rendering rule would place the <i>shadda</i> above the <i>damma</i>, which is incorrect. </p>
+
+<p>Some cases are obvious to readers of languages written with Arabic script, and thus will likely get the same display from various rendering implementations. However, many of the combining marks, especially those with ccc=220 and ccc=230, are not commonly understood. Different rendering implementations have made different decisions regarding display order, resulting in inconsistent behavior between one system and another.</p>
+
+<p>AMTRA defines a method to reorder Arabic combining marks in order to accomplish the following goals:
+<ul>
+	<li>The inside-out rendering rule will display combining marks in the expected visual order.</li>
+	<li>Ensure identical display of canonically equivalent sequences.</li>
+	<li>Provide a mechanism for overriding the display order in exceptional cases.</li>
+</ul>
+<p class="caption"><a name="Table_1" href="#Table_1">Table 1: Canonical Combining Class Values for Marks Used in Arabic Script</a></p>
+	<div align="center">
+			<table class="simple">
+				<tr>
+					<th rowspan="1">Canonical Combining Class (ccc) Value</th>
+					<th rowspan="1"><div align="center">Combining Marks in this Class</div></th>
+				</tr>
+<tr>
+	
+					<td>0</td>
+					<td>Combining grapheme joiner</td>
+				</tr>
+				<tr>
+					<td>27</td>
+					<td>fathatan, open fathatan</td>
+				</tr>
+				<tr>
+					<td>28</td>
+					<td>dammatan, open dammatan</td>
+				</tr>
+				<tr>
+					<td>29</td>
+					<td>kasratan, open kasratan</td>
+				</tr>
+				<tr>
+					<td>30</td>
+					<td>fatha, small fatha</td>
+				</tr>
+				<tr>
+					<td>31</td>
+					<td>damma, small damma</td>
+				</tr>
+				<tr>
+					<td>32</td>
+					<td>kasra, small kasra</td>
+				</tr>
+				<tr>
+					<td>33</td>
+					<td>shadda</td>
+				</tr>
+				<tr>
+					<td>34</td>
+					<td>sukun</td>
+				</tr>
+				<tr>
+					<td>35</td>
+					<td>Superscript alef</td>
+				</tr>
+				<tr>
+					<td>220</td>
+					<td>All other below combining marks</td>
+				</tr>
+				<tr>
+					<td>230</td>
+					<td>All other above combining marks</td>
+				</tr>
+			</table>
+		</div>
+
+ 		<h2>3 <a name="AMTRA_Description" href="#AMTRA_Description">Description of the Algorithm</a></h2>
+<p>The algorithm starts by reordering combining marks according to one of the Unicode Normalization forms, and then makes adjustments by moving certain marks closer to the base.</p>
+		<h3>3.1 <a name="MCM" href="#MCM">Modifier Combining Marks (MCM)</a></h3>
+		<p>For use by this algorithm, this specification defines a group of combining marks called “Modifier Combining Marks” (MCM). MCM are combining characters that are normally used to modify the base character before them, and should normally be rendered closer to the base character than <i>tashkil</i> (supplementary diacritics, including vowels). The MCM characters are not formally classified as <i>ijam</i> (consonant pointing/nukta, and so on) in the Unicode Standard, but they are usually perceived by users as <i>ijam</i>.</p>
+<p>The complete list of MCM characters is:</p>
+<dl>
+<dd>U+0654 ARABIC HAMZA ABOVE</dd>
+<dd>U+0655 ARABIC HAMZA BELOW</dd>
+<dd>U+0658 ARABIC MARK NOON GHUNNA</dd>
+<dd>U+06DC ARABIC SMALL HIGH SEEN</dd>
+<dd>U+06E3 ARABIC SMALL LOW SEEN</dd>
+<dd>U+06E7 ARABIC SMALL HIGH YEH</dd>
+<dd>U+06E8 ARABIC SMALL HIGH NOON</dd>
+<dd>U+08D3 ARABIC SMALL LOW WAW</dd>
+<dd>U+08F3 ARABIC SMALL HIGH WAW</dd>
+</dl>
+    <p>The set of MCM characters is stable. Adding an existing Unicode character to the list of MCM could change the rendering of data that assumes the implementation of AMTRA. Additional characters may be added to the MCM at the time they are encoded (see Section 5.4 <a href="#Rationale">Rationale for Exclusion of Some Marks</a>).</p>
+
+		<h3>3.2 <a name="AMTRA_Specification" href="#AMTRA_Specification">Specification of AMTRA</a></h3>
+<p>In the following specification, parenthetical definitions, for example (D56), refer to definitions in the Unicode core specification.</p>
+
+<p><b>Input:</b> A Combining Character Sequence (D56) containing one or more Arabic combining marks.</p>
+
+<p><b>Output:</b> A canonically equivalent Combining Character Sequence reordered for rendering using inside-out stacking.</p>
+
+<p>Steps:</p>
+	<ol>
+		<li>Normalize the input to NFD</li>
+		<li>Within the result, for each maximal-length substring, S, of non-starter (D107) characters, re-order as follows:
+		    <ol type="a">
+			<li>Move any shadda characters (ccc=33) to the beginning of <i>S</i>.</li>
+			<li>If a sequence of ccc=230 characters begins with any MCM characters, move the sequence of such MCM characters to the beginning of <i>S</i> (before any characters with ccc=33).</li>
+			<li>If a sequence of ccc=220 characters begins with any MCM characters, move the sequence of such MCM characters to the beginning of <i>S</i> (before any MCM with ccc=230 or ccc=33).</li>
+		    </ol>
+		</li>
+	</ol>
+
+
+ 		<h2>4 <a name="Demonstrating_AMTRA" href="#Demonstrating_AMTRA">Demonstrating AMTRA</a></h2>
+		<h3>4.1 <a name="Test_Case" href="#Test_Case">Artificial Test Case</a></h3>
+						<p>The following figure demonstrates the algorithm using an artificial sequence of characters:</p>
+        <div align="left">
+							<img alt="Artificial Test Case demonstrating AMTRA" src="images/01AMTRA.jpg" id="AMTRA01">
+		</div>
+		<h3>4.2 <a name="Override" href="#Override">Override Mechanism for Exceptions</a></h3>
+				<p>The default display order implemented by the AMTRA will be correct for most uses. However in 
+					situations where a different mark order is desired, U+034F COMBINING GRAPHEME JOINER (CGJ) 
+					can be used to achieve the desired display order. The following sections give examples of the use of CGJ.</p>
+		<h3>4.3 <a name="Examples" href="#Examples">Examples</a></h3>
+				<p>The following examples demonstrate why each of the respective characters is included in the MCM.</p>
+        <h4>U+0654 ARABIC HAMZA ABOVE and U+0655 ARABIC HAMZA BELOW</h4>
+        <p>The use of combining hamza above and below is discussed in Section 9.2, <i>Arabic</i> [<a href="#Unicode">Unicode</a>].</p>
+        <p><b><a name="Example1" href="#Example1">Example 1</a></b> [<a href="#Quran1">Quran1</a>] (page 9, end of line 5)</p>
+        <div align="left">
+							<img alt="Example 1" src="images/1_Quran1p9.png" id="Example_1" hspace="30">
+		</div>
+        <p>In Example 1, AMTRA puts a <i>damma</i> over a <i>hamza above</i>:</p>
+        <div align="left">
+							<img alt="AMTRA run over example 1a" src="images/02AMTRA.jpg" id="AMTRA02">
+		</div>
+
+        <p>If an orthography needs to put the <i>hamza above</i> over the <i>damma</i>, the text should be encoded as &lt;damma, CGJ, hamza above&gt;:</p>
+        <div align="left">
+							<img alt="AMTRA run over example 1a using CGJ" src="images/03AMTRA.jpg" id="AMTRA03">
+		</div>
+
+        	<p>AMTRA puts the <i>kasra</i> below a <i>hamza below</i>:</p>
+        <div align="left">
+							<img alt="AMTRA run over example 1b" src="images/04AMTRA.jpg" id="AMTRA04">
+		</div>
+
+        	<p>If an orthography needs to put the <i>hamza below</i> under the <i>kasra</i>, the text should be encoded as &lt;kasra, CGJ, hamza below&gt;:</p>
+        <div align="left">
+							<img alt="AMTRA run over example 1b using CGJ" src="images/05AMTRA.jpg" id="AMTRA05">
+		</div>
+
+       <h4>U+0658 ARABIC MARK NOON GHUNNA</h4>
+       <p>Regarding inclusion of this mark in the MCM, Kew says “The ARABIC NASALIZATION MARK is considered equivalent to a ‘nukta’, <i>as it is a modifier 
+       	that binds tightly to the underlying letter.</i>” (italics added for emphasis) [<a href="#Kew">Kew</a>].The character is the character encoded as U+0658 ARABIC MARK NOON GHUNNA.</p>
+       <h4>U+06DC ARABIC SMALL HIGH SEEN and U+06E3 ARABIC SMALL LOW SEEN</h4>
+       <p>ARABIC SMALL HIGH SEEN is included in MCM because most Quranic orthographies use the character as an MCM only. Orthographies that place the <i>small seen</i> differently will need to use a CGJ.</p>
+         <p><b><a name="Example2a" href="#Example2a">Example 2a</a></b> [<a href="#Al-Hilâlî">Al-Hilâlî</a>]</p>
+
+       <div align="left">
+							<img alt="Example 2a" src="images/2a_Al-Hilali.png" id="Example_2a" hspace="30">
+		</div>
+         <p><b><a name="Example2b" href="#Example2b">Example 2b</a></b> [<a href="#Al-Hilâlî">Al-Hilâlî</a>]</p>
+       <div align="left">
+							<img alt="Example 2b" src="images/2b_Al-Hilali.png" id="Example_2b" hspace="30">
+		</div>
+         <p>In Example 2a, the <i>small high seen</i> is rendered below the <i>sukun</i>, while in Example 2b, it is rendered over it. 
+         	The examples are indeed from the same document (Al-Hilâlî and Khân 1996), just two pages away. The <i>small high seen</i> has 
+         	different roles: in Example 2a it is a hint that the base letter, <i>sad</i>, should be pronounced as if it was a <i>seen</i>; in Example 2b, it is a pause-related hint.</p>
+         		<p>Example 2a (characters and properties):</p>
+        <div align="left">
+							<img alt="AMTRA run over example 2a" src="images/06AMTRA.jpg" id="AMTRA06">
+		</div>
+         		<p>Running AMTRA on this string does not result in any changes.</p>
+         		<p>Example 2b (characters and properties):</p>
+        <div align="left">
+							<img alt="AMTRA run over example 2b" src="images/07AMTRA.jpg" id="AMTRA07">
+		</div>
+         		<p>Running AMTRA on the string in Example 2b resulted in an undesired change. It puts a <i>sukun</i> over a <i>seen above</i>. 
+         			If an orthography needs to put the <i>seen above</i> over the <i>sukun</i>, the text should be encoded as &lt;sukun, CGJ, seen above&gt;.</p>
+        <div align="left">
+							<img alt="AMTRA run over example 2b using CGJ" src="images/08AMTRA.jpg" id="AMTRA08">
+		</div>
+        <h4>U+06E7 ARABIC SMALL HIGH YEH</h4>
+        <p><b><a name="Example3" href="#Example3">Example 3</a></b> [<a href="#Milo">Milo</a>] (page 9, line 11)</p>
+       <div align="left">
+							<img alt="Example 3" src="images/3_Milo.png" id="Example_3" hspace="30">
+		</div>
+        <p>In Example 3, AMTRA puts a <i>shadda</i> over a <i>small high yeh</i>. </p>
+        <div align="left">
+							<img alt="AMTRA run over example 3" src="images/09AMTRA.jpg" id="AMTRA09">
+		</div>
+        <p>If an orthography needs to put the <i>small high yeh</i> over the <i>shadda</i>, the text should be encoded as &lt;shadda, CGJ, small high yeh&gt;.</p>
+        <div align="left">
+							<img alt="AMTRA run over example 3 using CGJ" src="images/10AMTRA.jpg" id="AMTRA10">
+		</div>
+        	<p>Running AMTRA on this string does not result in any changes.</p>
+        <h4>U+08F3 ARABIC SMALL HIGH WAW and U+08D3 ARABIC SMALL LOW WAW</h4>
+        	<p>U+08F3 ARABIC SMALL HIGH WAW “is functionally similar to the already-encoded 
+        U+06E7 ARABIC SMALL HIGH YEH” and therefore <i>small high waw</i> is included in MCM 
+        [<a href="#Pournader">Pournader</a>]. In available examples, <i>small high waw</i> and <i>small low waw</i> are functionally equivalent and, because they emphasize the vowel, are strongly bound to the body of the word. For these reasons they are both included in MCM.</p>
+        <h4>U+06E8 ARABIC SMALL HIGH NOON</h4>
+        <p><b><a name="Example4a" href="#Example4a">Example 4a</a></b> [<a href="#Quran2">Quran2</a>]</p>
+       <div align="left">
+							<img alt="Example 4a" src="images/4a_Quran2.png" id="Example_4a" hspace="30">
+		</div>
+        <p>Example 4a has a <i>sukun</i> over a <i>small high noon</i>. AMTRA puts a <i>sukun</i> over a <i>small high noon</i>. 
+        	If an orthography needs to put <i>small high noon</i> over <i>sukun</i>, the text should be encoded as &lt;sukun, CGJ, small high noon&gt;.</p>
+        <div align="left">
+							<img alt="AMTRA run over example 4a using CGJ" src="images/11AMTRA.jpg" id="AMTRA11">
+		</div>
+        <p><b><a name="Example4b" href="#Example4b">Example 4b</a></b></p>
+       <div align="left">
+							<img alt="Example 4b" src="images/4b_Practical.png" id="Example_4b" hspace="30">
+		</div>
+        <p>Example 4b shows a practical orthography that uses <i>small high noon</i> for nasalization. It is theoretically possible for a vowel to appear 
+        	above the <i>small high noon</i> in this practical orthography. In such a case, AMTRA puts the vowel (in this case <i>damma</i>) above <i>small high noon</i>.</p>
+          <div align="left">
+							<img alt="AMTRA run over example 4b" src="images/12AMTRA.jpg" id="AMTRA12">
+		</div>
+      		<p>In order to force the <i>small high noon</i> above the vowel, use the CGJ (&lt;oe, damma, CGJ, small high noon&gt;).</p>
+        <div align="left">
+							<img alt="AMTRA run over example 4b using CGJ" src="images/13AMTRA.jpg" id="AMTRA13">
+		</div>
+ 		<h2>5 <a name="Supplemental_Information" href="#Supplemental_Information">Supplemental Information</a></h2>
+		<h3>5.1 <a name="NFD_NFC" href="#NFD_NFC">Use of NFD and Not NFC</a></h3>
+		<p>NFD assures that sequences such as &lt;superscript alef, madda&gt; always result in the same ordering, independent of the base letter. If the algorithm were to 
+			use NFC instead, the sequence &lt;alef, superscript alef, madda&gt; would have resulted in a different order than &lt;lam, superscript alef, madda&gt;, because NFC 
+			composes &lt;alef, madda&gt; to &lt;alef-with-madda-above&gt;.</p>
+		<h3>5.2 <a name="Shadda" href="#Shadda">Shadda</a></h3>
+		<p>The combining class for <i>shadda</i> (ccc=33) is higher than most vowels; however, it should be displayed closer to the base than the vowels.</p>
+		<h3>5.3 <a name="Kasra" href="#Kasra">Kasra and Kasra-like Characters</a></h3>
+		<p>AMTRA is able to handle the special ligation of <i>kasra</i> and <i>kasra-like</i> characters which are ligated with a <i>shadda</i> or <i>hamza</i> 
+			in some styles and appear just below them instead of below the base letter; they still logically follow the <i>shadda</i> or <i>hamza</i>.</p>
+		<h3>5.4 <a name="Rationale" href="#Rationale">Rationale for Exclusion of Some Marks</a></h3>
+		<p><i>Meem above</i> (ccc=230), <i>meem below</i> (ccc=220) and other similar characters are not 
+			included in the MCM because their behavior already meets normal expectations. Examples 5a-5c show that the <i>meem</i> is 
+			normally kept after <i>fatha</i>, <i>kasra</i> or <i>damma</i>, whereas including <i>meem above</i> and 
+			<i>meem below</i> in MCM would have the undesirable effect of moving them in front of <i>fatha</i>, <i>kasra</i> or <i>damma</i>.</p>
+				<p><b><a name="Example5a" href="#Example5a">Example 5a</a></b> [<a href="#Quran1">Quran1</a>] (page 11)</p>
+       <div align="left">
+							<img alt="Example 5a" src="images/5a_Quran1.png" id="Example_5a" hspace="30">
+		</div>
+
+				<p><b><a name="Example5b" href="#Example5b">Example 5b</a></b> [<a href="#Quran1">Quran1</a>] (page 21)</p>
+       <div align="left">
+							<img alt="Example 5b" src="images/5b_Quran1.png" id="Example_5b" hspace="30">
+		</div>
+
+				<p><b><a name="Example5c" href="#Example5c">Example 5c</a></b> [<a href="#Quran1">Quran1</a>] (page 19)</p>
+       <div align="left">
+							<img alt="Example 5c" src="images/5c_Quran1.png" id="Example_5c" hspace="30">
+		</div>
+				<h4>Sukun alternate forms</h4>
+				<p>There are three <i>sukun-like</i> marks encoded at U+06DF..U+06E1 that are used in some Quranic orthographies to 
+					denote different entities – they may not always represent a <i>sukun</i>. The canonical combining class of these marks is 230, 
+					so their ordering in the presence of other combining marks is not affected by AMTRA. However, since the combining class for the 
+					<i>sukun</i> is 34, these <i>sukun-like</i> marks will <i>not</i> be treated like a normal <i>sukun</i> in all cases. Users 
+					who create data using these alternate <i>sukun</i> characters will have more flexibility than when using the normal <i>sukun</i>. 
+					AMTRA does not make them equivalent to U+0652 ARABIC SUKUN, as that would make the algorithm unnecessarily complex and 
+					make the usage of CGJ more frequent.</p>
+				<h4>Maddah</h4>
+				<p>Neither U+0653 ARABIC MADDAH ABOVE (ccc=230) nor U+06E4 ARABIC SMALL HIGH MADDA (ccc=230) 
+					are MCM because they are normally displayed above vowel marks. </p>
+		<h3>5.5 <a name="Dotted_circles" href="#Dotted_circles">Dotted Circles</a></h3>
+		<p>Some rendering engines will insert a dotted circle for what it understands to be an invalid sequence. This is a problem in Arabic script 
+			because something that appears invalid may actually be valid text in some lesser known orthography of a minority language or in the Quran. 
+			For example, the Microsoft Windows text rendering engine, described in [<a href="#Microsoft">Microsoft</a>], inserts a dotted circle in 
+			combinations of certain Quranic marks that are known to appear with each other in the Quran.</p>
+			<p>Such spell-checking processes are best implemented at a higher level than a rendering engine. Also, a dotted circle insertion algorithm that 
+				displays all canonically equivalent sequences identically is hard to design and the result may be counter-intuitive for its users.</p>
+				<p>Implementations of the algorithm may be adapted to insert dotted circles by applying the algorithm first and then inserting the dotted circles.</p>
+		<h3>5.6 <a name="Other" href="#Other">Other Uses for AMTRA</a></h3>
+		<p>There is no intention or expectation that AMTRA would be applied to stored text. However, there may 
+			 be situations unrelated to rendering where AMTRA may be useful, and this UTR does not prohibit such use.</p>
+		<p>As an example, when a text editor is processing a backspace key, a decision 
+			has to be made about what character(s) to remove from the text. For sequences involving combining marks, if the desire is to remove one mark 
+			at a time, users may have an expectation that the <i>outermost</i> marks should be removed first. For Arabic script the AMTRA could be used to 
+			identify outermost marks.</p>
+			<h3>5.7 <a name="Combining" href="#Combining">Best Combining Classes for Yet-to-be-encoded Combining Marks in Arabic</a></h3>
+			<p>When new combining marks are encoded, 220 should be used for below marks and 230 for above marks. In the special cases where an 
+				alternative version of the basic <i>tashkil</i> is encoded, the same combining class as the <i>tashkil</i> could be used, but extreme care should be taken.</p>
+		<h2><a name="References" href="#References">References</a></h2>
+
+
+
+  <table class="noborder" cellpadding="8">
+ <tr>
+ 	
+      <td class="nb" vAlign="top" width="1">[<a name="Al-Hilâlî" href="#Al-Hilâlî">Al-Hilâlî</a>]</td>
+      <td class="nb" vAlign="top">Muhammad Taqî-ud-Dîn Al-Hilâlî and Muhammad Muhsin Khân (translators) 1417 AH (=1996 CE). The Noble Qur’an: English Translation of the meanings and commentary. King Fahd Complex For The Printing of The Holy Qur’an. ISBN 9960-770-15-X.</td>
+
+ </tr>
+    <tr>
+      <td class="nb" vAlign="top" width="1">[<a name="Feedback" href="#Feedback">Feedback</a>]</td>
+      <td class="nb" vAlign="top">Reporting Errors and Requesting 
+        Information Online<i><br>
+        </i><a href="http://www.unicode.org/reporting.html">http://www.unicode.org/reporting.html</a></td>
+
+    </tr>
+
+<tr>
+      <td class="nb" vAlign="top" width="1">[<a name="Kew" href="#Kew">Kew</a>]</td>	
+      <td class="nb" vAlign="top">Kew, Jonathan, 2002. Bidi committee consensus on Arabic additions from L2/01-425 
+<a href="http://www.unicode.org/cgi-bin/GetMatchingDocs.pl?L2/02-061">http://www.unicode.org/cgi-bin/GetMatchingDocs.pl?L2/02-061</a> (accessed 1 May 2017).</td>
+
+<tr>
+      <td class="nb" vAlign="top" width="1">[<a name="Microsoft" href="#Microsoft">Microsoft</a>]</td>	
+      <td class="nb" vAlign="top">Microsoft Typography 2014. Developing OpenType Fonts for Arabic Script. <a href="https://docs.microsoft.com/en-us/typography/script-development/arabic">https://docs.microsoft.com/en-us/typography/script-development/arabic</a> (accessed 16 Feb 2018).</td>
+</tr>
+<tr>
+      <td class="nb" vAlign="top" width="1">[<a name="MicrosoftUSE" href="#MicrosoftUSE">Microsoft USE</a>]</td>	
+      <td class="nb" vAlign="top">Microsoft Typography 2017. Creating and supporting OpenType fonts for the Universal Shaping Engine. <a href="https://docs.microsoft.com/en-us/typography/script-development/use">https://docs.microsoft.com/en-us/typography/script-development/use</a> (accessed 22 May 2018).</td>
+</tr>
+<tr>
+      <td class="nb" vAlign="top" width="1">[<a name="Milo" href="#Milo">Milo</a>]</td>	
+      <td class="nb" vAlign="top">Milo, Thomas. 2005. Annotations to the printing of the 1924 Azhar Qur'an (U+0670, U+06D6..U+06DB, U+06DD..U+06DF, U+06E0..U+06ED) <a href="http://www.unicode.org/cgi-bin/GetMatchingDocs.pl?L2/05-151">http://www.unicode.org/cgi-bin/GetMatchingDocs.pl?L2/05-151</a> 
+(accessed 1 May 2017).</td>
+</tr>
+<tr>
+      <td class="nb" vAlign="top" width="1">[<a name="Pournader" href="#Pournader">Pournader</a>]</td>	
+      <td class="nb" vAlign="top">Pournader, Roozbeh. 2009. Proposal to encode four combining Arabic characters for Koranic use. <a href="http://www.unicode.org/cgi-bin/GetMatchingDocs.pl?L2/09-419">http://www.unicode.org/cgi-bin/GetMatchingDocs.pl?L2/09-419</a>
+(accessed 2 May 2017).</td>
+</tr>
+<tr>
+      <td class="nb" vAlign="top" width="1">[<a name="Quran1" href="#Quran1">Quran1</a>]</td>	
+      <td class="nb" vAlign="top">Quran example. Al-Baqarah. <a href="https://archive.org/stream/quran-pdf/002%20-%20Al-Baqarah">https://archive.org/stream/quran-pdf/002%20-%20Al-Baqarah</a> 
+(accessed 27 Jul 2017).</td>
+</tr>
+<tr>
+      <td class="nb" vAlign="top" width="1">[<a name="Quran2" href="#Quran2">Quran2</a>]</td>	
+      <td class="nb" vAlign="top">Quran example. <a href="http://www.dailyayat.com/al-ambiya/21/88">http://www.dailyayat.com/al-ambiya/21/88</a> (accessed 27 Jul 2017).</td>
+</tr>
+
+    <tr>
+
+      <td class="nb" vAlign="top" width="1">[<a name="Reports" href="#Reports">Reports</a>]</td>
+      <td class="nb" vAlign="top">Unicode Technical Reports<br>
+        <a href="http://www.unicode.org/reports/">http://www.unicode.org/reports/<br>
+        </a><i>For information on the status and development process for 
+        technical reports, and for a list of technical reports.</i></td>
+    </tr>
+
+    <tr>
+      <td class="nb" vAlign="top" width="1">[<a name="Unicode" href="#Unicode">Unicode</a>]</td>
+
+      <td class="nb" vAlign="top">The Unicode Standard<br>
+          <i>For the latest version, see:</i><br>
+          <a href="http://www.unicode.org/versions/latest/">http://www.unicode.org/versions/latest/</a><br>
+	</td>
+
+    </tr>
+    <tr>
+      <td class="nb" vAlign="top" width="1">[<a name="Versions" href="#Versions">Versions</a>]</td>
+      <td class="nb" vAlign="top">Versions of the Unicode Standard<br>
+        <a href="http://www.unicode.org/standard/versions/">http://www.unicode.org/standard/versions/<br>
+        </a><i>For information on version numbering, and citing and referencing 
+        the Unicode Standard, the Unicode Character Database, and Unicode 
+        Technical Reports.</i></td>
+
+    </tr>
+  </table>
+
+
+
+		<h2><a name="Modifications" href="#Modifications">Modifications</a></h2>
+		<p>The following summarizes modifications from the previous revision of this 
+  document.</p>
+
+		<ul>
+		<li>
+		<p><b>Revision 4:</b></p>
+
+<ul>
+	<li><a href="#MCM">3.1 Modifier Combining Marks (MCM)</a>
+	    <ul>
+		<li>Moved U+08D3 ARABIC SMALL LOW WAW above U+08F3.</li>
+	    </ul>
+	</li>
+	<li>Initial approved version.</li>
+</ul>
+</ul>
+
+		<ul>
+		<li>
+		<p><b>Revision 3:</b></p>
+
+<ul>
+	<li>Draft Technical Report</li>
+</ul>
+<ul>
+	<li><a href="#Summary">Summary</a>
+	    <ul>
+		<li>Summary URL turned into a reference.</li>
+	    </ul>
+	</li>
+</ul>
+
+<ul>
+	<li><a href="#AMTRA_Description">Description of the Algorithm</a>
+	    <ul>
+		<li>Renamed section.</li>
+  	<li>Removed Review Note and incorporated text into following paragraph.</li>
+	    </ul>
+	</li>
+</ul>
+
+<ul>
+	<li><a href="#MCM">3.1 Modifier Combining Marks (MCM)</a>
+	    <ul>
+		<li>Added U+08D3 ARABIC SMALL LOW WAW to MCM.</li>
+	    </ul>
+	</li>
+</ul>
+
+<ul>
+	<li><a href="#AMTRA_Specification">3.2 Specification of AMTRA</a>
+	    <ul>
+		<li>Renamed section.</li>
+	    </ul>
+	</li>
+</ul>
+
+<ul>
+	<li><a href="#Examples">4.3 Examples</a>
+	    <ul>
+		<li>Removed reference to ARABIC NASALIZATION MARK.</li>
+	  <li>Changed self reference to [Pournader] to a normal reference.</li>
+	  <li>Added rationale for including U+08D3 in MCM.</li>
+	    </ul>
+	</li>
+</ul>
+
+<ul>
+	<li><a href="#Other">5.6 Other Uses for AMTRA</a>
+	    <ul>
+		<li>Small editorial changes.</li>
+	    </ul>
+	</li>
+</ul>
+
+<ul>
+	<li><a href="#References">References</a>
+	    <ul>
+		<li>Added <a href="#MicrosoftUSE">Microsoft Typography 2017</a> link.</li>
+	    </ul>
+	</li>
+</ul>
+
+<li>
+
+		<p><b>Revision 2:</b></p>
+
+
+
+<ul>
+	<li>Proposed Draft Technical Report.</li>
+	<li>Converted to html.</li>
+	<li>Renamed algorithm to have a more pronounceable acronym.</li>
+</ul>
+
+<ul>
+	<li>Title
+	    <ul>
+		<li>Renamed document.</li>
+	    </ul>
+	</li>
+</ul>
+
+<ul>
+	<li><a href="#Summary">Summary</a>
+	    <ul>
+		<li>Clarified scope and intent of this UTR.</li>
+	    </ul>
+	</li>
+</ul>
+
+<ul>
+	<li><a href="#Overview">1. Overview</a>
+	    <ul>
+		<li>Reworded the Overview for clarity.</li>
+	    </ul>
+	</li>
+</ul>
+
+<ul>
+	<li><a href="#MCM">3.1 Modifier Combining Marks (MCM)</a>
+	    <ul>
+		<li>Reworded stability statements in final paragraph.</li>
+	    </ul>
+	</li>
+</ul>
+
+<ul>
+	<li><a href="#AMTRA_Specification">3.2 AMTRA</a>
+	    <ul>
+		<li>Reworded steps 2b and 2c for clarity.</li>
+	    </ul>
+	</li>
+</ul>
+
+<ul>
+	<li><a href="#Examples">4.3 Examples</a>
+	    <ul>
+		<li>Reworded paragraph in <a href="#Example3">Example 3</a>.</li>
+		<li>Added explanatory details and graphics for Examples <a href="#Example1">1</a>, <a href="#Example3">3</a>, <a href="#Example4a">4a</a> and <a href="#Example4b">4b</a>.</li>
+	    </ul>
+	</li>
+	</ul>
+<ul>
+	<li><a href="#Rationale">5.4 Rationale for Exclusion of Some Marks</a>
+	    <ul>
+		<li>Reworded first paragraph.</li>
+	    </ul>
+	</li>
+</ul>
+
+<ul>
+	<li><a href="#Other">5.6 Other Uses for AMTRA</a>
+	    <ul>
+		<li>Clarified that there is no intention or expectation that AMTRA would be applied to stored text.</li>
+		<li>Expanded to indicate why a text editor may want to utilize AMTRA within backspace processing.</li>
+	    </ul>
+	</li>
+</ul>
+
+<ul>
+	<li><a href="#References">References</a>
+	    <ul>
+		<li>Modified <a href="#Microsoft">Microsoft Typography</a> link.</li>
+		<li>Sorted per Unicode document conventions.</li>
+	    </ul>
+	</li>
+</ul>
+
+</li>
+<li>
+
+		<p><b>Revision 1:</b></p>
+		<ul>
+			<li>Initial Draft.</li>
+		</ul>
+</li>
+</ul>
+		<hr align="LEFT">
+		<p class="copyright">Copyright © 2001-2018  
+  Unicode, Inc. All Rights Reserved. The Unicode Consortium makes no expressed  
+  or implied warranty of any kind, and assumes no liability for errors or  
+  omissions. No liability is assumed for incidental and consequential damages in  
+  connection with or arising out of the use of the information or programs  
+  contained or accompanying this technical report. The Unicode 
+  		<a href="http://www.unicode.org/copyright.html">Terms of Use</a> apply.</p>
+		<p class="copyright">Unicode and the Unicode logo are trademarks of Unicode, 
+  Inc., and are registered in some jurisdictions.</p>
+</div>
+
+
+</body>
+
+</html>

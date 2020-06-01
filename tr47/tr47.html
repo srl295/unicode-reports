@@ -1,0 +1,978 @@
+<!doctype HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-us">
+<title>UTR #47: Korean Processing Forms</title>
+<link rel="stylesheet" type="text/css" href="http://www.unicode.org/reports/reports.css">
+</head>
+
+<body bgcolor="#ffffff">
+
+<table class="header">
+	<tr>
+		<td class="icon"><a href="http://www.unicode.org">
+		<img align="middle" alt="[Unicode]" border="0" src="http://www.unicode.org/webscripts/logo60s2.gif" width="34" height="33"></a>&nbsp;
+		<a class="bar" href="http://www.unicode.org/reports/">Technical Reports</a></td>
+	</tr>
+	<tr>
+		<td class="gray">&nbsp;</td>
+	</tr>
+</table>
+
+<div class="body">
+	<h2 align="center"><span STYLE="color: #FF0000">Proposed Draft </span>
+	Unicode Technical Report #47</h2>
+	<h1>Korean Processing Transformations</h1>
+	<table class="wide" cellspacing="2" cellpadding="2" border="1" width="90%">
+		<tr>
+			<td>Version</td>
+			<td>1<font color="#FF0000"> (draft 1)</font></td>
+		</tr>
+		<tr>
+			<td>Authors</td>
+			<td><a href="https://plus.google.com/114199149796022210033?rel=author">Mark Davis</a> (<a href="mailto:markdavis@google.com">markdavis@google.com</a>), 
+			Jungshik Shin</td>
+		</tr>
+		<tr>
+			<td>Date</td>
+			<td><span STYLE="background-color: #FFFF00">2009-01-27</span></td>
+		</tr>
+		<tr>
+			<td>This Version</td>
+			<td><a HREF="http://www.unicode.org/reports/tr47/tr47-1.html">http://www.unicode.org/reports/tr47/tr47-1.html</a></td>
+		</tr>
+		<tr>
+			<td>Previous Version</td>
+			<td>n/a</td>
+		</tr>
+		<tr>
+			<td>Latest Version</td>
+			<td><a HREF="http://www.unicode.org/reports/tr47/">http://www.unicode.org/reports/tr47/</a></td>
+		</tr>
+		<tr>
+			<td width="20%">Revision</td>
+			<td><a href="#Modifications">1</a></td>
+		</tr>
+	</table>
+	<h4><i>Summary</i></h4>
+	<p>Korean text can be represented in Unicode in different useful ways, 
+	including the customary NFC and NFD forms (see UAX #15, “Unicode 
+	Normalization Forms” [<a href="http://www.unicode.org/reports/tr41/tr41-3.html#UAX15">UAX15</a>]). 
+	This document provides background information on the nature of Korean text, 
+	including clarifications of the atomic units of encoding at a very basic 
+	level, and defines three additional transformations that can be useful in 
+	processing Korean text. It also discusses transformations of compatibility 
+	characters.</p>
+
+
+<div>
+
+
+	<h4>
+	<i>Status</i>
+	</h4>
+	<p>
+	<i>This is a <b>draft</b> document which may be updated,
+	    replaced, or superseded by other documents at any
+	    time. Publication does not imply endorsement by the Unicode
+	    Consortium.  This is not a stable document; it is inappropriate
+	    to cite this document as other than a work in progress.</i>
+	</p>
+	<blockquote>
+	<p>
+	<i>
+	<b>A Unicode Technical Report (UTR)</b> contains
+		informative material. Conformance to the Unicode Standard does
+		not imply conformance to any UTR. Other specifications,
+		however, are free to make normative references to a
+		UTR.</i>
+	</p>
+	</blockquote>
+	<p>
+	<i>Please submit corrigenda and other comments with the online
+	reporting form [<a href="../tr41/tr41-3.html#Feedback">Feedback</a>].  Related
+	information that is useful in understanding this document is found
+	in <a href="#References">References</a>.  For the latest version of
+	the Unicode Standard see  [<a href="../tr41/tr41-3.html#Unicode">Unicode</a>]. For a list of current Unicode
+	Technical Reports see [<a href="../tr41/tr41-3.html#Reports">Reports</a>]. For
+	more information about versions of the Unicode Standard, see [<a href="../tr41/tr41-3.html#Versions">Versions</a>].</i>
+	</p>
+
+
+
+	<h4><i>Contents</i></h4>
+
+<ul class="toc">
+<li class="toc">1 <a href="#Introduction">Introduction</a></li>
+<li>2 <a href="#Character_Types">Character_Types</a><ul class="toc">
+<li>2.1 <a href="#Character_Types">Atomic Jamo Characters</a></li>
+<li class="toc">2.2 <a href="#TOC-Precomposed-Jamo-Characters">Compound Jamo Characters</a></li>
+<li class="toc">2.3 <a href="#TOC-Precomposed-Syllables">Compound Syllables</a></li>
+</ul></li>
+<li class="toc">3 <a href="#TOC-Unicode-Normalization-Forms">Unicode Normalization Forms</a></li>
+<li class="toc">4 <a href="#TOC-Maximal-Korean-Decompounding-and-Compounding">
+Maximal Korean Decompounding and Compounding</a></li>
+<li class="toc">5 <a href="#TOC-Common-Korean-Composition">Common Korean 
+Compounding</a></li>
+<li class="toc">6 <a href="#Transforming_Compatibility_Characters">Transforming 
+Compatibility Characters</a></li>
+<li class="toc">7 <a href="#TOC-Optimization">Optimization</a>
+    </li>
+<li class="toc">8 <a href="#TOC-Compatibility-and-Security">Compatibility and Security</a></li>
+<li class="toc">9 <a href="#TOC-Acknowledgements">Acknowledgements</a></li>
+<li class="toc"><a href="#References">References</a></li>
+<li class="toc"><a href="#Modifications">Modifications</a></li>
+</ul>
+<i><span style="background-color: #FFFF00">[Ed note: make images for the 
+	syllables that are not precomosed.]</span></i><hr>
+
+<h2>1 <a name="Introduction">Introduction</a></h2>
+	<p>Korean text can be represented in Unicode in different useful ways, 
+	including the customary NFC and NFD forms (see UAX #15, “Unicode 
+	Normalization Forms” [<a href="http://www.unicode.org/reports/tr41/tr41-3.html#UAX15">UAX15</a>]). 
+	This document provides background information on the nature of Korean text, 
+	including clarifications of the atomic units of encoding at a very basic 
+	level, and defines three additional transformations that can be useful in 
+	processing Korean text. It also discusses transformations of compatibility 
+	characters.</p>
+	<p>A maximal decompounding transformation goes further than NFD in reducing 
+	Korean text to completely atomic units. A maximal compounding transformation 
+	provides the reverse operation, going further than NFC in forming compounds 
+	out of the completely atomic units. These are used by a wide variety of 
+	software, especially in open-source, and also correspond to certain 
+	keyboarding methods. Finally, the transformation favored by the new Korean 
+	Standard KS X 1026-1:2007 is described, wherein a syllable is either a 
+	single character or a sequence of exactly two or three characters as described 
+	below.</p>
+	<p>These transformations should not be mistaken for Unicode Normalization 
+	Forms; in particular, for NFC, the recommended format for interchange. 
+	However, it is straightforward to convert to and from NFC as needed.</p>
+	<h2><a name="Character_Types">2 Character Types</a></h2>
+	<h3>2.1 <a name="TOC-Atomic-Jamo-Characters">Atomic Jamo Characters</a></h3>
+<p>
+At its heart, Korean can be represented by a sequence of atomic jamo characters.
+The atomic jamo characters are listed in the table below, broken out between modern and archaic.</p>
+
+<table style="border-collapse: collapse;" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td width="42"><b>Abbr.</b></td>
+<td><b>Property Value Name</b></td>
+<td width="379"><b>Comments</b></td>
+</tr>
+<tr>
+<td width="42">L<br>
+</td>
+<td><a href="http://unicode.org/cldr/utility/list-unicodeset.jsp?a=%5B:Hangul_Syllable_Type=Leading_Jamo:%5D">Leading_Jamo</a></td>
+<td width="379"><i>leading consonants; also called choseong</i></td>
+</tr>
+<tr>
+<td width="42">V<br>
+</td>
+<td><a href="http://unicode.org/cldr/utility/list-unicodeset.jsp?a=%5B:Hangul_Syllable_Type=Vowel_Jamo:%5D">Vowel_Jamo</a></td>
+<td width="379"><i>vowels; also called jungseong</i></td>
+</tr>
+<tr>
+<td width="42">T<br>
+</td>
+<td><a href="http://unicode.org/cldr/utility/list-unicodeset.jsp?a=%5B:Hangul_Syllable_Type=Trailing_Jamo:%5D">Trailing_Jamo</a></td>
+<td width="379"><i>trailing consonants; also called jongseong</i></td>
+</tr>
+<tr>
+<td width="42">LV<br>
+</td>
+<td><a href="http://unicode.org/cldr/utility/list-unicodeset.jsp?a=%5B:Hangul_Syllable_Type=LV_Syllable:%5D">LV_Syllable</a></td>
+<td width="379">&nbsp;</td>
+</tr>
+<tr>
+<td width="42">LVT<br>
+</td>
+<td><a href="http://unicode.org/cldr/utility/list-unicodeset.jsp?a=%5B:Hangul_Syllable_Type=LVT_Syllable:%5D">LVT_Syllable</a></td>
+<td width="379">&nbsp;</td>
+</tr>
+<tr>
+<td width="42">NA<br>
+</td>
+<td><a href="http://unicode.org/cldr/utility/list-unicodeset.jsp?a=%5B:Hangul_Syllable_Type=Not_Applicable:%5D">Not_Applicable</a></td>
+<td width="379"><i>including some Hangul compatibility characters: see below.</i><br>
+</td>
+</tr>
+</tbody>
+</table>
+<a name="Hangul_Syllable_Type"><br>
+</a>Korean syllables normally consist of one
+lead character, followed by one vowel character, followed by
+zero or one trail character. The jamo characters are further divided into modern versus 
+	archaic, and atomic versus 
+	compound. <br>
+&nbsp;</p>
+
+
+<table style="border-collapse: collapse;" cellspacing="0" border="1">
+<caption><b>Atomic Jamo Characters</b></caption>
+<tbody>
+<tr>
+<td style="text-align: center;"><b>14 Modern Atomic L Characters</b><br>[ᄀᄂᄃᄅ-ᄇᄉᄋᄌᄎ-ᄒ]<br>
+</td>
+<td style="text-align: center;"><b>10 Archaic Atomic L Characters<br></b>[ᄼᄾᅀᅌᅎᅐᅔᅕᅙ]<br></td>
+</tr>
+<tr>
+<td><code><a href="http://unicode.org/cldr/utility/character.jsp?a=1100">U+1100</a></code> (&nbsp;ᄀ&nbsp;) HANGUL CHOSEONG KIYEOK<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1102">U+1102</a></code> (&nbsp;ᄂ&nbsp;) HANGUL CHOSEONG NIEUN<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1103">U+1103</a></code> (&nbsp;ᄃ&nbsp;) HANGUL CHOSEONG TIKEUT<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1105">U+1105</a></code> (&nbsp;ᄅ&nbsp;) HANGUL CHOSEONG RIEUL<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1106">U+1106</a></code> (&nbsp;ᄆ&nbsp;) HANGUL CHOSEONG MIEUM<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1107">U+1107</a></code> (&nbsp;ᄇ&nbsp;) HANGUL CHOSEONG PIEUP<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1109">U+1109</a></code> (&nbsp;ᄉ&nbsp;) HANGUL CHOSEONG SIOS<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=110B">U+110B</a></code> (&nbsp;ᄋ&nbsp;) HANGUL CHOSEONG IEUNG<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=110C">U+110C</a></code> (&nbsp;ᄌ&nbsp;) HANGUL CHOSEONG CIEUC<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=110E">U+110E</a></code> (&nbsp;ᄎ&nbsp;) HANGUL CHOSEONG CHIEUCH<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=110F">U+110F</a></code> (&nbsp;ᄏ&nbsp;) HANGUL CHOSEONG KHIEUKH<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1110">U+1110</a></code> (&nbsp;ᄐ&nbsp;) HANGUL CHOSEONG THIEUTH<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1111">U+1111</a></code> (&nbsp;ᄑ&nbsp;) HANGUL CHOSEONG PHIEUPH<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1112">U+1112</a></code> (&nbsp;ᄒ&nbsp;) HANGUL CHOSEONG HIEUH<br>
+	</td>
+<td><code><a href="http://unicode.org/cldr/utility/character.jsp?a=1140">U+1140</a></code> (&nbsp;ᅀ&nbsp;) HANGUL CHOSEONG PANSIOS<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=114C">U+114C</a></code> (&nbsp;ᅌ&nbsp;) HANGUL CHOSEONG YESIEUNG<code><br>
+<a href="http://unicode.org/cldr/utility/character.jsp?a=1159">U+1159</a></code> (&nbsp;ᅙ&nbsp;) HANGUL CHOSEONG YEORINHIEUH<br>
+<br><b>(for Chinese phonetics)</b><br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=113C">U+113C</a></code> (&nbsp;ᄼ&nbsp;) HANGUL CHOSEONG CHITUEUMSIOS<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=113E">U+113E</a></code> (&nbsp;ᄾ&nbsp;) HANGUL CHOSEONG CEONGCHIEUMSIOS<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=114E">U+114E</a></code> (&nbsp;ᅎ&nbsp;) HANGUL CHOSEONG CHITUEUMCIEUC<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1150">U+1150</a></code> (&nbsp;ᅐ&nbsp;) HANGUL CHOSEONG CEONGCHIEUMCIEUC<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1154">U+1154</a></code> (&nbsp;ᅔ&nbsp;) HANGUL CHOSEONG CHITUEUMCHIEUCH<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1155">U+1155</a></code> (&nbsp;ᅕ&nbsp;) HANGUL CHOSEONG CEONGCHIEUMCHIEUCH<br>
+<br>
+</td>
+</tr>
+<tr>
+<td style="text-align: center;"><b>10 Modern Atomic V Characters<br></b>[ᅡᅣᅥᅧᅩᅭᅮᅲᅳᅵ]<br></td>
+<td style="text-align: center;"><b>1 Archaic Atomic V Characters<br></b>[ᆞ]<br></td>
+</tr>
+<tr>
+<td><code><a href="http://unicode.org/cldr/utility/character.jsp?a=1161">U+1161</a></code> (&nbsp;ᅡ&nbsp;) HANGUL JUNGSEONG A<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1163">U+1163</a></code> (&nbsp;ᅣ&nbsp;) HANGUL JUNGSEONG YA<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1165">U+1165</a></code> (&nbsp;ᅥ&nbsp;) HANGUL JUNGSEONG EO<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1167">U+1167</a></code> (&nbsp;ᅧ&nbsp;) HANGUL JUNGSEONG YEO<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1169">U+1169</a></code> (&nbsp;ᅩ&nbsp;) HANGUL JUNGSEONG O<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=116D">U+116D</a></code> (&nbsp;ᅭ&nbsp;) HANGUL JUNGSEONG YO<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=116E">U+116E</a></code> (&nbsp;ᅮ&nbsp;) HANGUL JUNGSEONG U<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1172">U+1172</a></code> (&nbsp;ᅲ&nbsp;) HANGUL JUNGSEONG YU<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1173">U+1173</a></code> (&nbsp;ᅳ&nbsp;) HANGUL JUNGSEONG EU<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1175">U+1175</a></code> (&nbsp;ᅵ&nbsp;) HANGUL JUNGSEONG I</td>
+<td><code><a href="http://unicode.org/cldr/utility/character.jsp?a=119E">U+119E</a></code> (&nbsp;ᆞ&nbsp;) HANGUL JUNGSEONG ARAEA</td>
+</tr>
+<tr>
+<td style="text-align: center;"><b>14 Modern Atomic T Characters<br></b>[ᆨᆫᆮᆯᆷᆸᆺᆼ-ᇂ]<br></td>
+<td style="text-align: center;">&nbsp;<b>3 Archaic Atomic T Characters<br></b>[ᇫᇰᇹ]<br></td>
+</tr>
+<tr>
+<td><code><a href="http://unicode.org/cldr/utility/character.jsp?a=11A8">U+11A8</a></code> (&nbsp;ᆨ&nbsp;) HANGUL JONGSEONG KIYEOK<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11AB">U+11AB</a></code> (&nbsp;ᆫ&nbsp;) HANGUL JONGSEONG NIEUN<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11AE">U+11AE</a></code> (&nbsp;ᆮ&nbsp;) HANGUL JONGSEONG TIKEUT<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11AF">U+11AF</a></code> (&nbsp;ᆯ&nbsp;) HANGUL JONGSEONG RIEUL<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11B7">U+11B7</a></code> (&nbsp;ᆷ&nbsp;) HANGUL JONGSEONG MIEUM<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11B8">U+11B8</a></code> (&nbsp;ᆸ&nbsp;) HANGUL JONGSEONG PIEUP<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11BA">U+11BA</a></code> (&nbsp;ᆺ&nbsp;) HANGUL JONGSEONG SIOS<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11BC">U+11BC</a></code> (&nbsp;ᆼ&nbsp;) HANGUL JONGSEONG IEUNG<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11BD">U+11BD</a></code> (&nbsp;ᆽ&nbsp;) HANGUL JONGSEONG CIEUC<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11BE">U+11BE</a></code> (&nbsp;ᆾ&nbsp;) HANGUL JONGSEONG CHIEUCH<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11BF">U+11BF</a></code> (&nbsp;ᆿ&nbsp;) HANGUL JONGSEONG KHIEUKH<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11C0">U+11C0</a></code> (&nbsp;ᇀ&nbsp;) HANGUL JONGSEONG THIEUTH<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11C1">U+11C1</a></code> (&nbsp;ᇁ&nbsp;) HANGUL JONGSEONG PHIEUPH<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11C2">U+11C2</a></code> (&nbsp;ᇂ&nbsp;) HANGUL JONGSEONG HIEUH</td>
+<td><code><a href="http://unicode.org/cldr/utility/character.jsp?a=11EB">U+11EB</a></code> (&nbsp;ᇫ&nbsp;) HANGUL JONGSEONG PANSIOS<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11F0">U+11F0</a></code> (&nbsp;ᇰ&nbsp;) HANGUL JONGSEONG YESIEUNG<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11F9">U+11F9</a></code> (&nbsp;ᇹ&nbsp;) HANGUL JONGSEONG YEORINHIEUH<br>
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+	<h3><a name="TOC-Precomposed-Jamo-Characters">2.2 Compound Jamo Characters</a></h3>
+<p>Many
+of the 
+jamo characters are compound, combining two or more
+characters together. These cases only include "like" characters, such
+as two L characters or two V characters. These compound characters
+are, for historic reasons, neither compatibility nor canonical variants
+of their decompositions. The compound jamo characters are listed in the table below, broken out between modern and archaic. Because the archaic characters are so numerous, they are linked to rather than listed explicitly.</p>
+<p>Note:
+even though the column on the right is titled Archaic, some of these
+characters may be used -- but just not part of Compound Syllables
+(see below). For more information, see <a href="http://i18nl10n.com/korean/uyeo.html">http://i18nl10n.com/korean/uyeo.html</a>.</p>
+	<p><span style="background-color: #FFFF00">[Ed note: the Unicode 5.2 
+	characters need to be added to these lists.]
+</span>
+	</p>
+
+
+<table style="border-collapse: collapse;" cellspacing="0" border="1">
+<caption><b>Compound Jamo Characters</b></caption>
+<tbody>
+<tr>
+<td style="text-align: center;"><b>5 Modern Compound L Characters</b><br>[ᄁᄄᄈᄊᄍ]<br>
+</td>
+<td style="text-align: center;"><b>62 Archaic Compound L Characters<br>
+</b></td>
+</tr>
+<tr>
+<td><code><a href="http://unicode.org/cldr/utility/character.jsp?a=1101">U+1101</a></code> (&nbsp;ᄁ&nbsp;) HANGUL CHOSEONG SSANGKIYEOK<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1104">U+1104</a></code> (&nbsp;ᄄ&nbsp;) HANGUL CHOSEONG SSANGTIKEUT<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1108">U+1108</a></code> (&nbsp;ᄈ&nbsp;) HANGUL CHOSEONG SSANGPIEUP<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=110A">U+110A</a></code> (&nbsp;ᄊ&nbsp;) HANGUL CHOSEONG SSANGSIOS<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=110D">U+110D</a></code> (&nbsp;ᄍ&nbsp;) HANGUL CHOSEONG SSANGCIEUC<br>
+	</td>
+<td>
+<div style="margin-left: 40px;"></div><a href="http://unicode.org/cldr/utility/list-unicodeset.jsp?a=%5B%5Cu1113-%5Cu113B%5Cu113D%5Cu113F%5Cu1141-%5Cu114B%5Cu114D%5Cu114F%5Cu1151-%5Cu1153%5Cu1156-%5Cu1158%5D">
+[ᄓ-ᄻ ᄽ ᄿ ᅁ-ᅋ ᅍ ᅏ ᅑ-ᅓ  ᅖ-ᅘ]</a>
+</td>
+</tr>
+<tr>
+<td style="text-align: center;"><b>11 Modern Compound V Characters<br> </b>[ᅢᅤᅦᅨᅪ-ᅬᅯ-ᅱᅴ]<br></td>
+<td style="text-align: center;"><b>44 Archaic Compound V Characters<br>
+</b></td>
+</tr>
+<tr>
+<td><code><a href="http://unicode.org/cldr/utility/character.jsp?a=1162">U+1162</a></code> (&nbsp;ᅢ&nbsp;) HANGUL JUNGSEONG AE<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1164">U+1164</a></code> (&nbsp;ᅤ&nbsp;) HANGUL JUNGSEONG YAE<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1166">U+1166</a></code> (&nbsp;ᅦ&nbsp;) HANGUL JUNGSEONG E<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1168">U+1168</a></code> (&nbsp;ᅨ&nbsp;) HANGUL JUNGSEONG YE<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=116A">U+116A</a></code> (&nbsp;ᅪ&nbsp;) HANGUL JUNGSEONG WA<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=116B">U+116B</a></code> (&nbsp;ᅫ&nbsp;) HANGUL JUNGSEONG WAE<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=116C">U+116C</a></code> (&nbsp;ᅬ&nbsp;) HANGUL JUNGSEONG OE<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=116F">U+116F</a></code> (&nbsp;ᅯ&nbsp;) HANGUL JUNGSEONG WEO<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1170">U+1170</a></code> (&nbsp;ᅰ&nbsp;) HANGUL JUNGSEONG WE<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1171">U+1171</a></code> (&nbsp;ᅱ&nbsp;) HANGUL JUNGSEONG WI<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1174">U+1174</a></code> (&nbsp;ᅴ&nbsp;) HANGUL JUNGSEONG YI</td>
+<td><a href="http://unicode.org/cldr/utility/list-unicodeset.jsp?a=%5B%5Cu1176-%5Cu119D%5Cu119F-%5Cu11A2%5D">[ᅶ-ᆝ ᆟ-ᆢ]</a></td>
+</tr>
+<tr>
+<td style="text-align: center;"><b>13 Modern Compound T Characters<br> </b>[ᆩᆪᆬᆭᆰ-ᆶᆹᆻ]<br></td>
+<td style="text-align: center;">&nbsp;<b>52 Archaic Compound T Characters</b></td>
+</tr>
+<tr>
+<td><code><a href="http://unicode.org/cldr/utility/character.jsp?a=11A9">U+11A9</a></code> (&nbsp;ᆩ&nbsp;) HANGUL JONGSEONG SSANGKIYEOK<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11AA">U+11AA</a></code> (&nbsp;ᆪ&nbsp;) HANGUL JONGSEONG KIYEOK-SIOS<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11AC">U+11AC</a></code> (&nbsp;ᆬ&nbsp;) HANGUL JONGSEONG NIEUN-CIEUC<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11AD">U+11AD</a></code> (&nbsp;ᆭ&nbsp;) HANGUL JONGSEONG NIEUN-HIEUH<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11B0">U+11B0</a></code> (&nbsp;ᆰ&nbsp;) HANGUL JONGSEONG RIEUL-KIYEOK<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11B1">U+11B1</a></code> (&nbsp;ᆱ&nbsp;) HANGUL JONGSEONG RIEUL-MIEUM<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11B2">U+11B2</a></code> (&nbsp;ᆲ&nbsp;) HANGUL JONGSEONG RIEUL-PIEUP<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11B3">U+11B3</a></code> (&nbsp;ᆳ&nbsp;) HANGUL JONGSEONG RIEUL-SIOS<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11B4">U+11B4</a></code> (&nbsp;ᆴ&nbsp;) HANGUL JONGSEONG RIEUL-THIEUTH<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11B5">U+11B5</a></code> (&nbsp;ᆵ&nbsp;) HANGUL JONGSEONG RIEUL-PHIEUPH<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11B6">U+11B6</a></code> (&nbsp;ᆶ&nbsp;) HANGUL JONGSEONG RIEUL-HIEUH<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11B9">U+11B9</a></code> (&nbsp;ᆹ&nbsp;) HANGUL JONGSEONG PIEUP-SIOS<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11BB">U+11BB</a></code> (&nbsp;ᆻ&nbsp;) HANGUL JONGSEONG SSANGSIOS
+
+<br>
+</td>
+<td><a href="http://unicode.org/cldr/utility/list-unicodeset.jsp?a=%5B%5Cu11C3-%5Cu11EA%5Cu11EC-%5Cu11EF%5Cu11F1-%5Cu11F8%5D">[ᇃ-ᇪ ᇬ-ᇯ ᇱ-ᇸ]
+</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div>
+<h4>&nbsp;</h4>
+<h4><a name="TOC-Precomposed-Syllables">2.3 Compound Syllables</a></h4>
+<p>
+For
+modern Korean, all 11,172 combinations of modern L, V, or T characters that form
+syllables are present in Unicode in compound forms, from AC00 to
+D7A3.</p>
+
+
+<div style="margin-left: 40px;"><code><a href="http://unicode.org/cldr/utility/character.jsp?a=AC00">U+AC00</a></code> (&nbsp;가&nbsp;) HANGUL SYLLABLE GA<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=AC01">U+AC01</a></code> (&nbsp;각&nbsp;) HANGUL SYLLABLE GAG<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=AC02">U+AC02</a></code> (&nbsp;갂&nbsp;) HANGUL SYLLABLE GAGG<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=AC03">U+AC03</a></code> (&nbsp;갃&nbsp;) HANGUL SYLLABLE GAGS<br>
+...<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=D7A0">U+D7A0</a></code> (&nbsp;힠&nbsp;) HANGUL SYLLABLE HIK<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=D7A1">U+D7A1</a></code> (&nbsp;힡&nbsp;) HANGUL SYLLABLE HIT<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=D7A2">U+D7A2</a></code> (&nbsp;힢&nbsp;) HANGUL SYLLABLE HIP<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=D7A3">U+D7A3</a></code> (&nbsp;힣&nbsp;) HANGUL SYLLABLE HIH<br>
+</div>
+<br>
+Every
+one of these compound syllables are of the form LV or LVT,
+where some of the L, V, or T characters may be compound jamo.  Of these, 399 are LV syllables and 10,773 are LVT syllables.<br>
+<br>
+<i>Example:</i><br>
+<br>
+<table style="border-collapse: collapse;" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td><b>Compound Syllable</b></td>
+<td><b>Component Compound Jamo</b></td>
+<td><b>Component Atomic Jamo</b><br>
+</td>
+</tr>
+<tr>
+<td><code><a href="http://unicode.org/cldr/utility/character.jsp?a=AF51">U+AF51</a></code> (&nbsp;꽑&nbsp;) HANGUL SYLLABLE GGWALG
+</td>
+<td><code><a href="http://unicode.org/cldr/utility/character.jsp?a=1101">U+1101</a></code> (&nbsp;ᄁ&nbsp;) HANGUL CHOSEONG SSANGKIYEOK,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=116A">U+116A</a></code> (&nbsp;ᅪ&nbsp;) HANGUL JUNGSEONG WA,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11B0">U+11B0</a></code> (&nbsp;ᆰ&nbsp;) HANGUL JONGSEONG RIEUL-KIYEOK</td>
+<td><code><a href="http://unicode.org/cldr/utility/character.jsp?a=1100">U+1100</a></code> (&nbsp;ᄀ&nbsp;) HANGUL CHOSEONG KIYEOK,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1100">U+1100</a></code> (&nbsp;ᄀ&nbsp;) HANGUL CHOSEONG KIYEOK,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1169">U+1169</a></code> (&nbsp;ᅩ&nbsp;) HANGUL JUNGSEONG O,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1161">U+1161</a></code> (&nbsp;ᅡ&nbsp;) HANGUL JUNGSEONG A,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11AF">U+11AF</a></code> (&nbsp;ᆯ&nbsp;) HANGUL JONGSEONG RIEUL,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11A8">U+11A8</a></code> (&nbsp;ᆨ&nbsp;) HANGUL JONGSEONG KIYEOK,</td>
+</tr>
+</tbody>
+</table>
+<br>
+<h2><a name="TOC-Unicode-Normalization-Forms">3 Unicode Normalization Forms</a></h2>
+<p>
+Unicode supplies several normalization forms, which are described in
+[<a href="http://www.unicode.org/reports/tr15/">Unicode Normalization Forms</a>]. The most common of these, and the one recommended for use on
+the web, is called NFC: where C stands for Composition. In terms of Korean characters, in this form a
+string is first put into a uniform decomposed form (NFD), and then for
+any modern L, V, and T characters, a V joins with a preceding L to form
+an LV compound syllable, and a T joins with a preceding LV to form
+an LVT compound syllable.</p>
+
+
+<p><i>
+Examples where NFC composes:</i></p>
+
+
+<div style="margin-left: 40px;"><code><a href="http://unicode.org/cldr/utility/character.jsp?a=1101">U+1101</a></code> (&nbsp;ᄁ&nbsp;) HANGUL CHOSEONG SSANGKIYEOK,<br>
+
+	<code><a href="http://unicode.org/cldr/utility/character.jsp?a=116A">U+116A</a></code> (&nbsp;ᅪ&nbsp;) HANGUL JUNGSEONG WA<br>
+
+	→<br>
+	<code><a href="http://unicode.org/cldr/utility/character.jsp?a=AF48">U+AF48</a></code> (&nbsp;꽈&nbsp;) HANGUL SYLLABLE GGWA<br>
+<br>
+	<code><a href="http://unicode.org/cldr/utility/character.jsp?a=AF48">U+AF48</a></code> (&nbsp;꽈&nbsp;) HANGUL SYLLABLE GGWA,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11B0">U+11B0</a></code> (&nbsp;ᆰ&nbsp;) HANGUL JONGSEONG RIEUL-KIYEOK<br>
+	→<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=AF51">U+AF51</a></code> (&nbsp;꽑&nbsp;) HANGUL SYLLABLE GGWALG<br>
+</div>
+
+<p>
+Normalization
+Form C only composes pairwise, in a single pass. It does not
+compose series of jamo of the same type.</p>
+
+<p>
+<i>
+Example where NFC does not compose:</i></p>
+
+
+<div style="margin-left: 40px;">
+The following sequence will <i><b>not</b></i> produce <code><a href="http://unicode.org/cldr/utility/character.jsp?a=AF51">U+AF51</a></code> (&nbsp;꽑&nbsp;) HANGUL SYLLABLE GGWALG under NFC:<br>
+	<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1100">U+1100</a></code> (&nbsp;ᄀ&nbsp;) HANGUL CHOSEONG KIYEOK,<br>
+
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1100">U+1100</a></code> (&nbsp;ᄀ&nbsp;) HANGUL CHOSEONG KIYEOK,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1169">U+1169</a></code> (&nbsp;ᅩ&nbsp;) HANGUL JUNGSEONG O,<br>
+
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1161">U+1161</a></code> (&nbsp;ᅡ&nbsp;) HANGUL JUNGSEONG A,<br>
+
+	<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11AF">U+11AF</a></code> (&nbsp;ᆯ&nbsp;) HANGUL JONGSEONG RIEUL,<br>
+
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11A8">U+11A8</a></code> (&nbsp;ᆨ&nbsp;) HANGUL JONGSEONG KIYEOK<br>
+</div>
+<p>
+Unicode
+Normalization Forms are widely used, and have strict stability
+requirements that prevent any changes. However, other transformations can be specified for particular 
+processing purposes.<br><br>Note that the visual appearance of NFC and NFD forms should be identical even though the underlying codes may be different.<br>
+</p>
+<h2><a name="TOC-Maximal-Korean-Decompounding-and-Compounding">4 Maximal Korean 
+Decompounding and Compounding</a></h2>
+
+<p>The Maximal Korean Compounding and Decompounding transformations are parallel 
+to the NFC and NFD transformations, but are based on a finer-grained use of 
+atomic jamo characters.
+These forms are defined by the data tables in [<a href="#MKD">MKD</a>] and [<a href="#MKC">MKC</a>], using Unicode Locales (CLDR) <a href="http://unicode.org/reports/tr35/#Transform_Rules">transform rules</a>. The following are textual descriptions of how they are formed.</p>
+</div>
+<ul><li>
+The Maximal Korean Decompounding transformation first puts an input string into NFD format, then applies an
+additional set of rules to break down jamo characters of the same type.</li>
+<li>
+The Maximal Korean Compounding transformation first maximally decomposes an input string according to 
+Maximal Korean Decompounding, then 
+applies an additional set of rules to combine
+like jamo where possible, and finally applies NFC.</li>
+</ul>
+
+<div>
+<p><i>Note that once a string is transformed by Maximal Korean Decompounding, it is stable under NFD; that is, any application of NFD 
+to the string will make no further changes. Similarly, once a string is 
+transformed by Maximal Korean Compounding, it is stable under
+NFC; that is, any application of NFC to the string will make no further
+changes.</i></p>
+<p><span style="background-color: #FFFF00">[Ed Note: review the transform rules 
+with regard to IEUNG vs. YESIEUNG.]</span></p>
+
+<p>
+<i>Example of Maximal Korean Decompounding:</i></p>
+
+
+<table style="border-collapse: collapse;" border="1" cellspacing="0">
+<tbody>
+<tr>
+<td><b>Action</b></td>
+<td><b>Text</b></td>
+</tr>
+<tr>
+<td>Input<br>
+</td>
+<td><code><a href="http://unicode.org/cldr/utility/character.jsp?a=AF51">U+AF51</a></code> (&nbsp;꽑&nbsp;) HANGUL SYLLABLE GGWALG</td>
+</tr>
+<tr>
+<td>NFD&nbsp;
+</td>
+<td><code><a href="http://unicode.org/cldr/utility/character.jsp?a=1101">U+1101</a></code> (&nbsp;ᄁ&nbsp;) HANGUL CHOSEONG SSANGKIYEOK,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=116A">U+116A</a></code> (&nbsp;ᅪ&nbsp;) HANGUL JUNGSEONG WA,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11B0">U+11B0</a></code> (&nbsp;ᆰ&nbsp;) HANGUL JONGSEONG RIEUL-KIYEOK</td>
+</tr>
+<tr>
+<td>Add. Rules
+</td>
+<td><code><a href="http://unicode.org/cldr/utility/character.jsp?a=1100">U+1100</a></code> (&nbsp;ᄀ&nbsp;) HANGUL CHOSEONG KIYEOK,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1100">U+1100</a></code> (&nbsp;ᄀ&nbsp;) HANGUL CHOSEONG KIYEOK,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1169">U+1169</a></code> (&nbsp;ᅩ&nbsp;) HANGUL JUNGSEONG O,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1161">U+1161</a></code> (&nbsp;ᅡ&nbsp;) HANGUL JUNGSEONG A,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11AF">U+11AF</a></code> (&nbsp;ᆯ&nbsp;) HANGUL JONGSEONG RIEUL,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11A8">U+11A8</a></code> (&nbsp;ᆨ&nbsp;) HANGUL JONGSEONG KIYEOK,</td>
+</tr>
+</tbody>
+</table>
+
+
+<p><i>Example of Maximal Korean Compounding:</i></p>
+
+
+<table style="border-collapse: collapse;" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td><b>Action</b></td>
+<td><b>Text</b></td>
+</tr>
+<tr>
+<td>Input<br>
+</td>
+<td><code><a href="http://unicode.org/cldr/utility/character.jsp?a=1100">U+1100</a></code> (&nbsp;ᄀ&nbsp;) HANGUL CHOSEONG KIYEOK,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1100">U+1100</a></code> (&nbsp;ᄀ&nbsp;) HANGUL CHOSEONG KIYEOK,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1169">U+1169</a></code> (&nbsp;ᅩ&nbsp;) HANGUL JUNGSEONG O,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1161">U+1161</a></code> (&nbsp;ᅡ&nbsp;) HANGUL JUNGSEONG A,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11AF">U+11AF</a></code> (&nbsp;ᆯ&nbsp;) HANGUL JONGSEONG RIEUL,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11A8">U+11A8</a></code> (&nbsp;ᆨ&nbsp;) HANGUL JONGSEONG KIYEOK</td>
+</tr>
+<tr>
+<td>Add. Rules
+</td>
+<td><code><a href="http://unicode.org/cldr/utility/character.jsp?a=1101">U+1101</a></code> (&nbsp;ᄁ&nbsp;) HANGUL CHOSEONG SSANGKIYEOK,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=116A">U+116A</a></code> (&nbsp;ᅪ&nbsp;) HANGUL JUNGSEONG WA,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11B0">U+11B0</a></code> (&nbsp;ᆰ&nbsp;) HANGUL JONGSEONG RIEUL-KIYEOK</td>
+</tr>
+<tr>
+<td>NFC
+</td>
+<td><code><a href="http://unicode.org/cldr/utility/character.jsp?a=AF51">U+AF51</a></code> (&nbsp;꽑&nbsp;) HANGUL SYLLABLE GGWALG
+</td>
+</tr>
+</tbody>
+</table>
+<p>
+<i>Note that the visual appearance of NFC, NFD, Maximal Korean Decompounding and 
+Maximal Korean Compounding should be identical even though the underlying codes may be different</i></p>
+
+<h2><a name="TOC-Common-Korean-Composition">5 Common Korean Compounding</a></h2>
+<i><span style="background-color: #FFFF00">[Ed note: probably want some name that references the Korean standard.]</span></i><p>
+The Korean Standard KS X 1026-1:2007 defines a format whereby the intent is for 
+compound
+syllables to occur only where all of the characters in a syllable can be
+included, and otherwise syllables are represented using two or three jamo characters. The Common Korean 
+Compounding transformation is intended to match that format, and is defined by the data tables in 
+[<a href="#CKC">CKC</a>]&nbsp; 
+using the Unicode Locales (CLDR) <a href="http://unicode.org/reports/tr35/#Transform_Rules">transform rules</a>.  The following is a textual description of how it is formed.</p>
+
+<p>
+The Common Korean Compounding transformation first transforms the
+input string into NFC, and then applies NFD to exactly the following Compound Syllables in that result:
+</p>
+
+<ol><li>any LV Compound Syllable that is preceded by an L or followed by a V or T.</li>
+<li>any LVT Compound Syllable that is preceded by an L or fosllowed by a T.</li>
+</ol>
+
+
+<p>Importantly, a string transformed by Common Korean Compounding is <i><b>not</b></i> stable
+under NFC; if NFC is applied to the string, it may change. However,
+this will only happen if the Common Korean Compounding string contains archaic syllables. The 
+transformation back from NFC is simple - just applying the rules given aboves.</p>
+
+
+<p><span style="background-color: #FFFF00">[Ed Note: describe how to insert FILLER characters to 
+match KS X 1026 recommendations.]</span></p>
+
+
+<p>
+<i>Example:</i></p>
+<p>
+<i>The following illustrates the difference between these formats.</i></p>
+<p>
+<br><span style="background-color: #FFFF00">[Ed Note: In the following table, add lines between each of the rows to make the following clearer, 
+and use images for the syllables.</span></p>
+<p>
+<span style="background-color: #FFFF00">Also break into three tables: one that 
+shows the normal cases, where NFC is identical to Common Korean Compounding. The second shows cases 
+where they differ, but no fillers are necessary. And the third shows how fillers 
+would be inserted to make &#39;normal&#39; syllable boundaries, as described in KS X 
+1026.]</span><br>
+</p>
+<table style="border-collapse: collapse;" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td><b>NFC</b></td>
+<td><b>NFC code points</b></td>
+<td style="width: 60px; text-align: center;">&nbsp;→</td><td><b>Common Korean 
+Compounding</b></td>
+<td><b>Common Korean Compounding codepoints</b></td>
+</tr>
+<tr>
+<td>꽑<br>
+ᄀ꽑<br>
+꽑ᅩ<br>
+꽑ᆯ<br>
+꽈<br>
+ᄀ꽈<br>
+꽈ᅩ<br>
+꽐</td>
+<td>U+AF51<br>
+U+1100 U+AF51<br>
+U+AF51 U+1169<br>
+U+AF51 U+11AF<br>
+U+AF48<br>
+U+1100 U+AF48<br>
+U+AF48 U+1169<br>
+U+AF50<br>
+</td>
+<td style="width: 60px;">&nbsp;</td><td>꽑<br>
+ᄀ꽑<br>
+꽑ᅩ<br>
+꽑ᆯ<br>
+꽈<br>
+ᄀ꽈<br>
+꽈ᅩ<br>
+꽐<br>
+</td>
+<td>U+AF51<br>
+U+1100 U+1101 U+116A U+11B0<br>
+U+AF51 U+1169<br>
+U+1101 U+116A U+11B0 U+11AF<br>
+U+AF48<br>
+U+1100 U+1101 U+116A<br>
+U+1101 U+116A U+1169<br>
+U+AF50</td>
+</tr>
+</tbody>
+</table>
+<p>
+<i>Note that the visual appearance of NFC, NFD, Maximal Korean Decompounding, 
+Maximal Korean Compounding, and Common Korean Compounding should be identical even though the underlying codes may be different.</i></p>
+
+
+<h2><a name="Transforming_Compatibility_Characters">6 Transforming Compatibility 
+Characters</a></h2>
+<p>
+There are a number of Korean characters defined for compatibility in Unicode, split among three blocks. 
+Disregarding unassigned characters, these are:</p>
+
+
+<b><a href="http://unicode.org/cldr/utility/list-unicodeset.jsp?a=%5B:Block=Hangul_Compatibility_Jamo:%5D">Hangul_Compatibility_Jamo</a></b><br>
+<div style="margin-left: 40px;"><code><a href="http://unicode.org/cldr/utility/character.jsp?a=3131">U+3131</a></code> (&nbsp;ㄱ&nbsp;) HANGUL LETTER KIYEOK<br>
+…<code><a href="http://unicode.org/cldr/utility/character.jsp?a=318E">U+318E</a></code> (&nbsp;ㆎ&nbsp;) HANGUL LETTER ARAEAE<br>
+<br>
+</div>
+<b><a href="http://unicode.org/cldr/utility/list-unicodeset.jsp?a=%5B:Block=Enclosed_CJK_Letters_And_Months:%5D">Enclosed_CJK_Letters_And_Months</a></b></div>
+<div style="margin-left: 40px;"><code><a href="http://unicode.org/cldr/utility/character.jsp?a=3200">U+3200</a></code> (&nbsp;㈀&nbsp;) PARENTHESIZED HANGUL KIYEOK<br>
+…<code><a href="http://unicode.org/cldr/utility/character.jsp?a=321E">U+321E</a></code> (&nbsp;㈞&nbsp;) PARENTHESIZED KOREAN CHARACTER O HU<br>
+</div>
+<div style="margin-left: 40px;"><code><a href="http://unicode.org/cldr/utility/character.jsp?a=3260">U+3260</a></code> (&nbsp;㉠&nbsp;) CIRCLED HANGUL KIYEOK<br>
+…<code><a href="http://unicode.org/cldr/utility/character.jsp?a=327E">U+327E</a></code> (&nbsp;㉾&nbsp;) CIRCLED HANGUL IEUNG U<br>
+</div>
+<br>
+<b><a href="http://unicode.org/cldr/utility/list-unicodeset.jsp?a=%5B:Block=Halfwidth_And_Fullwidth_Forms:%5D">Halfwidth_And_Fullwidth_Forms</a></b><br>
+<div style="margin-left: 40px;"><code><a href="http://unicode.org/cldr/utility/character.jsp?a=FFA0">U+FFA0</a></code> (&nbsp;&nbsp;) HALFWIDTH HANGUL FILLER<br>
+…<code><a href="http://unicode.org/cldr/utility/character.jsp?a=FFDC">U+FFDC</a></code> (&nbsp;ￜ&nbsp;) HALFWIDTH HANGUL LETTER I<br>
+</div>
+<p>
+Most of these compatibility Korean characters are jamo characters,
+except for the following four (which are also the only ones to contain
+the word "KOREAN" instead of "HANGUL"):</p>
+
+
+
+<div style="margin-left: 40px;"><code><a href="http://unicode.org/cldr/utility/character.jsp?a=321D">U+321D</a></code> (&nbsp;㈝&nbsp;) PARENTHESIZED KOREAN CHARACTER OJEON<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=321E">U+321E</a></code> (&nbsp;㈞&nbsp;) PARENTHESIZED KOREAN CHARACTER O HU<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=327C">U+327C</a></code> (&nbsp;㉼&nbsp;) CIRCLED KOREAN CHARACTER CHAMKO<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=327D">U+327D</a></code> (&nbsp;㉽&nbsp;) CIRCLED KOREAN CHARACTER JUEUI<br>
+</div>
+<p>
+The compatibility jamo characters corresponding to V characters are 
+unproblematic; they are mapped to V characters by the Unicode compatibility 
+normalizations (NFKC, NFKD). However, most other compatibility characters do not distinguish between the L and
+T forms for the consonants. They are mapped to L forms by the Unicode 
+compatibility normalizations except where they cannot be represented by a modern 
+L characters. In that latter case they are mapped to T characters. Thus the 
+Unicode compatibility normalizations do not normally result in well-formed 
+syllables.</p>
+	<p>
+There are two better approaches to take. One is to use the Unicode compatibility 
+normalizations, but insert FILLER characters so as to represent separate 
+elements. This results in a format that is stable under all Unicode 
+normalizations, and represented the compatibility characters as independent 
+elements. However, for many
+purposes it is useful to transform the Hangul Letters and Halfwidth
+Hangul Letters into complete syllables, with&nbsp; L, V, <b><i>and optionally T</i></b> characters. This is common in keyboarding, for example.</p>
+
+<p>The Maximal Korean Compatibility Compounding transformation is defined by the data tables in
+[<a href="#MKKC">MKKC</a>], using the Unicode Locales transformation 
+rules. The following is a textual descriptions of how it is formed.</p>
+
+
+	<blockquote>
+		<p>The Maximal Korean Compatibility Compounding transformation first converts
+any Compatibility or Halfwidth Hangul Letter L into a T if it is before an L 
+		form, then applies NFKD, then finally applies Maximal Korean 
+		Compounding.</p>
+	</blockquote>
+<p><i>Once a string has be transformed by Maximal Korean Compatibility 
+Compounding, it is stable under NFKC;
+that is, any application of NFKC to the string will make no further
+changes.</i></p>
+	<p><span style="background-color: #FFFF00">[Ed Note: The transformation 
+	rules are just a stub at this point, and need to be filled out.]</span></p>
+<p>
+Note that the visual appearance of Maximal Korean Compatibility Compounding will be different than its
+source if the source contained Hangul Compatibility Jamo or Halfwidth
+Jamo.</p>
+
+<h2><a name="TOC-Optimization">7 Optimization</a></h2>
+<p>The specifications provided above are <i>logical</i> specifications; they can and should be optimized
+in production software. In particular, the Maximal Korean Compounding form can be generated in a single pass: without
+first doing a decompounding. Such an optimization is even easier to
+perform for Korean characters than for NFC, because compounding of
+Korean characters only takes place between adjacent characters.</p>
+<p>
+This is done by generating a (logical) table for all pairs of character
+that interact. That table can be used to make a single pass through the
+text, producing Maximal Korean Compounding as it goes. The pairs that interact fall into two
+categories:</p>
+
+
+
+<h3><a name="TOC-X-Y-Z-">7.1 &lt;X,Y&gt; → &lt;Z&gt;</a></h3>
+<p>Merge the pair into a single character. Example:
+</p>
+
+<ul><li><code><a href="http://unicode.org/cldr/utility/character.jsp?a=1169">U+1169</a></code> (&nbsp;ᅩ&nbsp;) HANGUL JUNGSEONG O,&nbsp; <code><a href="http://unicode.org/cldr/utility/character.jsp?a=1161">U+1161</a></code> (&nbsp;ᅡ&nbsp;) HANGUL JUNGSEONG A<br>
+	→ <code><a href="http://unicode.org/cldr/utility/character.jsp?a=116A">U+116A</a></code> (&nbsp;ᅪ&nbsp;) HANGUL JUNGSEONG WA<br>
+</li>
+</ul>
+
+<h3><a name="TOC-X-Y-Z-W...-">7.2 &lt;X,Y&gt; → &lt;Z,W...&gt;</a></h3>
+<p>Replace the pair by a different string. This only happens in degenerate cases. Example:<br>
+</p>
+
+<ul><li><code><a href="http://unicode.org/cldr/utility/character.jsp?a=11B1">U+11B1</a></code> (&nbsp;ᆱ&nbsp;) HANGUL JONGSEONG RIEUL-MIEUM, <code><a href="http://unicode.org/cldr/utility/character.jsp?a=1101">U+1101</a></code> (&nbsp;ᄁ&nbsp;) HANGUL CHOSEONG SSANGKIYEOK<br>
+	→&nbsp;<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11D1">U+11D1</a></code> (&nbsp;ᇑ&nbsp;) HANGUL JONGSEONG RIEUL-MIEUM-KIYEOK, <code><a href="http://unicode.org/cldr/utility/character.jsp?a=1100">U+1100</a></code> (&nbsp;ᄀ&nbsp;) HANGUL CHOSEONG KIYEOK</li>
+</ul>
+
+<p>Example of Maximal Korean Compounding using pairwise combination:
+</p>
+
+<table style="border-collapse: collapse;" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td><b>Action</b>
+</td>
+<td><b>Text</b>
+</td>
+</tr>
+<tr>
+<td>Input
+</td>
+<td><code style="color: rgb(56, 118, 29);"><a href="http://unicode.org/cldr/utility/character.jsp?a=1100">U+1100</a></code> (&nbsp;ᄀ&nbsp;) HANGUL CHOSEONG KIYEOK,<br>
+<code style="color: rgb(56, 118, 29);"><a href="http://unicode.org/cldr/utility/character.jsp?a=1100">U+1100</a></code> (&nbsp;ᄀ&nbsp;) HANGUL CHOSEONG KIYEOK,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1169">U+1169</a></code> (&nbsp;ᅩ&nbsp;) HANGUL JUNGSEONG O,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1161">U+1161</a></code> (&nbsp;ᅡ&nbsp;) HANGUL JUNGSEONG A,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11AF">U+11AF</a></code> (&nbsp;ᆯ&nbsp;) HANGUL JONGSEONG RIEUL,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11A8">U+11A8</a></code> (&nbsp;ᆨ&nbsp;) HANGUL JONGSEONG KIYEOK,<br>
+
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1103">U+1103</a></code> (&nbsp;ᄃ&nbsp;) HANGUL CHOSEONG TIKEUT,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1103">U+1103</a></code> (&nbsp;ᄃ&nbsp;) HANGUL CHOSEONG TIKEUT,<br>
+...<br>
+</td>
+</tr>
+<tr>
+<td>Combine pair<br>
+
+</td>
+<td>→ <code style="color: rgb(56, 118, 29);"><a href="http://unicode.org/cldr/utility/character.jsp?a=1101">U+1101</a></code> (&nbsp;ᄁ&nbsp;) HANGUL CHOSEONG SSANGKIYEOK,<br>
+<code style="color: rgb(56, 118, 29);"><a href="http://unicode.org/cldr/utility/character.jsp?a=1169">U+1169</a></code> (&nbsp;ᅩ&nbsp;) HANGUL JUNGSEONG O,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1161">U+1161</a></code> (&nbsp;ᅡ&nbsp;) HANGUL JUNGSEONG A,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11AF">U+11AF</a></code> (&nbsp;ᆯ&nbsp;) HANGUL JONGSEONG RIEUL,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11A8">U+11A8</a></code> (&nbsp;ᆨ&nbsp;) HANGUL JONGSEONG KIYEOK,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1103">U+1103</a></code> (&nbsp;ᄃ&nbsp;) HANGUL CHOSEONG TIKEUT,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1103">U+1103</a></code> (&nbsp;ᄃ&nbsp;) HANGUL CHOSEONG TIKEUT,<br>
+...</td>
+</tr>
+<tr>
+<td>Combine pair</td>
+<td>→ <code style="color: rgb(56, 118, 29);"><a href="http://unicode.org/cldr/utility/character.jsp?a=AF2C">U+AF2C</a></code> (&nbsp;꼬&nbsp;) HANGUL SYLLABLE GGO,<br>
+<code style="color: rgb(56, 118, 29);"><a href="http://unicode.org/cldr/utility/character.jsp?a=1161">U+1161</a></code> (&nbsp;ᅡ&nbsp;) HANGUL JUNGSEONG A,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11AF">U+11AF</a></code> (&nbsp;ᆯ&nbsp;) HANGUL JONGSEONG RIEUL,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11A8">U+11A8</a></code> (&nbsp;ᆨ&nbsp;) HANGUL JONGSEONG KIYEOK,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1103">U+1103</a></code> (&nbsp;ᄃ&nbsp;) HANGUL CHOSEONG TIKEUT,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1103">U+1103</a></code> (&nbsp;ᄃ&nbsp;) HANGUL CHOSEONG TIKEUT,<br>
+...</td>
+</tr>
+<tr>
+<td>Combine pair</td>
+<td>→ <code style="color: rgb(56, 118, 29);"><a href="http://unicode.org/cldr/utility/character.jsp?a=AF48">U+AF48</a></code> (&nbsp;꽈&nbsp;) HANGUL SYLLABLE GGWA,<br>
+<code style="color: rgb(56, 118, 29);"><a href="http://unicode.org/cldr/utility/character.jsp?a=11AF">U+11AF</a></code> (&nbsp;ᆯ&nbsp;) HANGUL JONGSEONG RIEUL,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11A8">U+11A8</a></code> (&nbsp;ᆨ&nbsp;) HANGUL JONGSEONG KIYEOK,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1103">U+1103</a></code> (&nbsp;ᄃ&nbsp;) HANGUL CHOSEONG TIKEUT,<br>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=1103">U+1103</a></code> (&nbsp;ᄃ&nbsp;) HANGUL CHOSEONG TIKEUT,<br>
+...</td>
+</tr>
+<tr>
+<td>Combine pair</td>
+<td style="color: rgb(56, 118, 29);">→ 
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=AF50">U+AF50</a></code><span STYLE="color: rgb(0, 0, 0)"> (&nbsp;꽐&nbsp;) HANGUL SYLLABLE GGWAL,<br>
+</span>
+<code><a href="http://unicode.org/cldr/utility/character.jsp?a=11A8">U+11A8</a></code><span STYLE="color: rgb(0, 0, 0)"> (&nbsp;ᆨ&nbsp;) HANGUL JONGSEONG KIYEOK</span>,<br>
+<code style="color: rgb(0, 0, 0);"><a href="http://unicode.org/cldr/utility/character.jsp?a=1103">U+1103</a></code>
+<span style="color: rgb(0, 0, 0);"> (&nbsp;ᄃ&nbsp;) HANGUL CHOSEONG TIKEUT,</span><br style="color: rgb(0, 0, 0);">
+<code style="color: rgb(0, 0, 0);"><a href="http://unicode.org/cldr/utility/character.jsp?a=1103">U+1103</a></code>
+<span style="color: rgb(0, 0, 0);"> (&nbsp;ᄃ&nbsp;) HANGUL CHOSEONG TIKEUT</span>,<br STYLE="color: rgb(0, 0, 0)">
+<span STYLE="color: rgb(0, 0, 0)">...</span></td>
+</tr>
+<tr>
+<td>No combination, move to next
+</td>
+<td><code><a href="http://unicode.org/cldr/utility/character.jsp?a=AF51">U+AF51</a></code> (&nbsp;꽑&nbsp;) HANGUL SYLLABLE GGWALG,<br>
+<code style="color: rgb(56, 118, 29);"><a href="http://unicode.org/cldr/utility/character.jsp?a=1103">U+1103</a></code> (&nbsp;ᄃ&nbsp;) HANGUL CHOSEONG TIKEUT,<br>
+<code style="color: rgb(56, 118, 29);"><a href="http://unicode.org/cldr/utility/character.jsp?a=1103">U+1103</a></code> (&nbsp;ᄃ&nbsp;) HANGUL CHOSEONG TIKEUT,<br>
+...</td>
+</tr>
+<tr>
+<td>Combine pair<br>
+</td>
+<td><code><a href="http://unicode.org/cldr/utility/character.jsp?a=AF51">U+AF51</a></code> (&nbsp;꽑&nbsp;) HANGUL SYLLABLE GGWALG,<br>
+→ <code style="color: rgb(56, 118, 29);"><a href="http://unicode.org/cldr/utility/character.jsp?a=1104">U+1104</a></code> (&nbsp;ᄄ&nbsp;) HANGUL CHOSEONG SSANGTIKEUT<br>...</td>
+</tr>
+</tbody>
+</table>
+<p>
+Such a table, if it were expressed literally, would be huge: here are the counts for the replacement strings:
+</p>
+
+<table style="border-collapse: collapse;" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td><b>Length</b></td>
+<td style="text-align: right;"><b>Count of instances</b></td>
+</tr>
+<tr>
+<td>1<br>
+</td>
+<td style="text-align: right;">19,892</td>
+</tr>
+<tr>
+<td>2<br>
+</td>
+<td style="text-align: right;">88,650</td>
+</tr>
+<tr>
+<td>3<br>
+</td>
+<td style="text-align: right;">222,510</td>
+</tr>
+<tr>
+<td>4<br>
+</td>
+<td style="text-align: right;">3,192</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+So in practice such a pairwise table would not be stored literally, but
+instead, because of the regularities in Korean compounding, would be
+primarily expressed via small tables and coded algorithms.</p>
+
+
+<h2><a name="TOC-Compatibility-and-Security">8 Compatibility and Security</a></h2>
+<p>
+<span STYLE="background-color: #FFFF00">[Ed
+note: Describe the relations between the above forms, and give
+scenarios as to how they would be transformed back and forth. Note the
+security issues.]</span></p>
+
+
+<h2><a name="TOC-Acknowledgements">9 Acknowledgements</a></h2>
+<p><span STYLE="background-color: #FFFF00">[Ed note: Add thanks ...]</span>
+</p>
+
+
+	<h2><a name="References">References</a></h2>
+	<table cellspacing="12" cellpadding="0" border="0" class="noborder">
+		<tr>
+		<td class="nb" valign="top">[<a name="CKC">CKC</a>]</td>
+
+		  <td class="nb" valign="top">Common Korean Compounding Data<br/>
+			<i>For the latest version, see:</i><br/>
+			<a href="http://www.unicode.org/reports/tr47/ckc-1.txt">http://www.unicode.org/reports/tr47/ckc-1.txt</a> <br/>
+		  </td>
+		</tr>
+		<tr>
+		<td class="nb" valign="top">[<a name="MKC">MKC</a>]</td>
+
+		  <td class="nb" valign="top">Maximal Korean Compounding Data<br/>
+			<i>For the latest version, see:</i><br/>
+			<a href="http://www.unicode.org/reports/tr47/mkc-1.txt">http://www.unicode.org/reports/tr47/mkc-1.txt</a> <br/>
+		  </td>
+		</tr>
+		<tr>
+		<td class="nb" valign="top">[<a name="MKD">MKD</a>]</td>
+
+		  <td class="nb" valign="top">Maximal Korean Decompounding Data<br/>
+			<i>For the latest version, see:</i><br/>
+			<a href="http://www.unicode.org/reports/tr47/mkd-1.txt">http://www.unicode.org/reports/tr47/mkd-1.txt</a> <br/>
+		  </td>
+		</tr>
+		<tr>
+		<td class="nb" valign="top">[<a name="MKKC">MKKC</a>]</td>
+
+		  <td class="nb" valign="top">Maximal Korean Compatibility Compounding Data<br/>
+			<i>For the latest version, see:</i><br/>
+			<a href="http://www.unicode.org/reports/tr47/mkkc-1.txt">http://www.unicode.org/reports/tr47/mkkc-1.txt</a> <br/>
+		  </td>
+		</tr>
+	</table>
+	<h2><a name="Modifications">Modifications</a></h2>
+	<p>This section indicates the changes introduced by each revision.</p>
+	<p><b>Revision 1</b></p>
+	<ul>
+		<li>
+			<p>First version</p>
+		</li>
+	</ul>
+	<hr>
+	<p class="copyright">Copyright © 2009 Unicode, Inc. All Rights Reserved. The Unicode Consortium makes no expressed or implied warranty of any kind, and assumes no liability for errors or omissions. No liability is assumed for incidental and consequential damages in connection with or arising out of the use of the information or programs contained or accompanying this technical report. The Unicode <a href="http://www.unicode.org/copyright.html">Terms of Use</a> apply.</p>
+	<p class="copyright">Unicode and the Unicode logo are trademarks of Unicode, Inc., and are registered in some jurisdictions.</p>
+</div>
+</body>
+</html>
